@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:pages": "next build",
     "start": "next start",
     "lint": "eslint ."
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "gsap": "^3.15.0",

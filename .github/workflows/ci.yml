@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  NEXT_PUBLIC_BASE_PATH: /mbilal-portfolio
+
+jobs:
+  quality:
+    name: Lint & static build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Verify export output
+        run: |
+          set -euo pipefail
+          if [[ ! -f "out/index.html" ]]; then
+            echo "::error::Expected out/index.html was not produced."
+            ls -la out/ || true
+            exit 1
+          fi
+          if [[ ! -f "out/.nojekyll" ]]; then
+            echo "::error::Missing out/.nojekyll (required for GitHub Pages)."
+            exit 1
+          fi
+          if ! grep -q '"/mbilal-portfolio/_next/' out/index.html; then
+            echo "::error::Built index.html is missing /mbilal-portfolio base path prefixes."
+            exit 1
+          fi
+          echo "Static export verified."

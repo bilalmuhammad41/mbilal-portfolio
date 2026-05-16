@@ -1,0 +1,176 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      git_ref:
+        description: "Git ref to deploy (branch, tag, or commit SHA)"
+        required: true
+        default: main
+        type: string
+      release_tag:
+        description: "Optional release label for this deployment (e.g. v1.0.0)"
+        required: false
+        type: string
+      confirm:
+        description: 'Type "deploy" to confirm production deployment'
+        required: true
+        type: string
+
+run-name: Deploy ${{ inputs.release_tag || inputs.git_ref }} to GitHub Pages
+
+concurrency:
+  group: pages-deploy-${{ github.repository }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  NEXT_PUBLIC_BASE_PATH: /mbilal-portfolio
+  NODE_ENV: production
+
+jobs:
+  guard:
+    name: Confirm deployment
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate confirmation
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.confirm }}" != "deploy" ]]; then
+            echo "::error::Deployment not confirmed. Re-run the workflow and type deploy in the confirm field."
+            exit 1
+          fi
+          if [[ -z "${{ inputs.git_ref }}" ]]; then
+            echo "::error::git_ref is required."
+            exit 1
+          fi
+          echo "Deployment confirmed for ref: ${{ inputs.git_ref }}"
+
+  build:
+    name: Build static site
+    needs: guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      commit_sha: ${{ steps.meta.outputs.commit_sha }}
+      commit_short: ${{ steps.meta.outputs.commit_short }}
+      release_label: ${{ steps.meta.outputs.release_label }}
+      deployed_at: ${{ steps.meta.outputs.deployed_at }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.git_ref }}
+          fetch-depth: 0
+
+      - name: Resolve deployment metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "commit_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          if [[ -n "${{ inputs.release_tag }}" ]]; then
+            echo "release_label=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_label=${{ inputs.git_ref }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Verify export output
+        run: |
+          set -euo pipefail
+          EXPORT_ROOT="out"
+          if [[ ! -f "${EXPORT_ROOT}/index.html" ]]; then
+            echo "::error::Missing ${EXPORT_ROOT}/index.html"
+            find out -maxdepth 3 -type f | head -50 || true
+            exit 1
+          fi
+          if [[ ! -f "${EXPORT_ROOT}/.nojekyll" ]]; then
+            echo "::error::Missing ${EXPORT_ROOT}/.nojekyll"
+            exit 1
+          fi
+          if ! grep -q '"/mbilal-portfolio/_next/' "${EXPORT_ROOT}/index.html"; then
+            echo "::error::index.html is missing /mbilal-portfolio base path prefixes."
+            exit 1
+          fi
+          for asset in Logo.png profile_picture.jpg lines.png; do
+            if [[ ! -f "${EXPORT_ROOT}/${asset}" ]]; then
+              echo "::error::Missing asset ${EXPORT_ROOT}/${asset}"
+              exit 1
+            fi
+          done
+          echo "Export verification passed."
+
+      - name: Write deployment manifest
+        run: |
+          set -euo pipefail
+          cat > out/deployment.json <<EOF
+          {
+            "site": "mbilal-portfolio",
+            "release": "${{ steps.meta.outputs.release_label }}",
+            "gitRef": "${{ inputs.git_ref }}",
+            "commit": "${{ steps.meta.outputs.commit_sha }}",
+            "deployedAt": "${{ steps.meta.outputs.deployed_at }}",
+            "basePath": "${{ env.NEXT_PUBLIC_BASE_PATH }}",
+            "workflowRun": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+          EOF
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## GitHub Pages deployment"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| URL | ${{ steps.deployment.outputs.page_url }} |"
+            echo "| Release | ${{ inputs.release_tag || inputs.git_ref }} |"
+            echo "| Git ref | \`${{ inputs.git_ref }}\` |"
+            echo "| Commit | \`${{ needs.build.outputs.commit_short }}\` (\`${{ needs.build.outputs.commit_sha }}\`) |"
+            echo "| Deployed at | ${{ needs.build.outputs.deployed_at }} |"
+            echo "| Base path | \`${{ env.NEXT_PUBLIC_BASE_PATH }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
