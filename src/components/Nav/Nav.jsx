@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import "./Nav.css"
 import { MobileNavItems, NavItems } from '../../constants'
 import {lines, close} from '../../assets'
+import Image from "next/image";
 
 const Nav = ({formattedTime}) => {
   const [scrolling, setScrolling] = useState(false)
@@ -185,7 +186,7 @@ const Nav = ({formattedTime}) => {
         
               <button className={` text-black select-none font-semibold text-[17px] menu-button flex justify-center items-center `}>
                   <span >CLOSE</span>
-                  <span className='ml-2 h-[13px] w-[13px]'><img src={close} alt="" /></span>
+                  <span className='ml-2 h-[13px] w-[13px]'><Image src={close} alt="" /></span>
               </button>
             </div>
           </div>

@@ -5,6 +5,7 @@ import {
   lines,
   profile_picture,
 } from "@/assets";
+import { withBasePath } from "@/lib/basePath";
 
 const IMAGE_ASSETS = [
   lines,
@@ -12,7 +13,7 @@ const IMAGE_ASSETS = [
   arrow_down,
   arrow_right_up,
   profile_picture,
-  "/Logo.png",
+  withBasePath("/Logo.png"),
 ];
 
 const FONT_ASSETS = [

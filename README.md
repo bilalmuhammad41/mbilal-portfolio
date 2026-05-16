@@ -34,6 +34,17 @@ npm run start   # run production server locally
 npm run lint    # ESLint
 ```
 
+## Deployment (GitHub Pages)
+
+Live URL: **https://bilalmuhammad41.github.io/mbilal-portfolio/**
+
+Deployments are **manual** via GitHub Actions. See [.github/DEPLOYMENT.md](.github/DEPLOYMENT.md) for setup, releases, and how to run the deploy workflow.
+
+```bash
+# Local static build (same as CI / Pages)
+NEXT_PUBLIC_BASE_PATH=/mbilal-portfolio npm run build
+```
+
 ## Project status
 
 Core sections and navigation are in place. Possible follow-ups include richer hover interactions in the projects list and dedicated detail views per project.
