@@ -1,6 +1,6 @@
-# mbilal-portfolio
+# Mbilal-portfolio
 
-A single-page front-end project focused on layout, motion, and scroll-driven interactions. It is **not** a personal portfolio site and **not** a replica of another designer’s work — it is a sandbox for practicing modern web UI patterns.
+A single-page front-end project focused on layout, motion, and scroll-driven interactions.
 
 ## Tech stack
 
