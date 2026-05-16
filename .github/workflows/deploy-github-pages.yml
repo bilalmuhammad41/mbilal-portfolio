@@ -29,7 +29,6 @@ defaults:
 
 env:
   NEXT_PUBLIC_BASE_PATH: /mbilal-portfolio
-  NODE_ENV: production
 
 jobs:
   guard:

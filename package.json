@@ -8,7 +8,7 @@
     "build": "next build",
     "build:pages": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "npx eslint ." 
   },
   "engines": {
     "node": ">=20"
