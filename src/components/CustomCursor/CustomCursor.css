@@ -1,0 +1,10 @@
+.custom-cursor{
+  position: absolute;
+  background-color: beige;
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  z-index: 99;
+  transition: transform 300ms cubic-bezier(.39,.97,.8,.97);
+  mix-blend-mode: exclusion;
+}

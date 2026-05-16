@@ -1,0 +1,64 @@
+.text-container{
+  transition: all 600ms ease-out;
+}
+.not-visible{
+  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
+  transform: translateY(200%);
+}
+
+.visible{
+  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
+  transform: translateY(0%);
+}
+
+.-not-visible{
+  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
+  transform: translateY(-100%);
+}
+
+.visible{
+  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
+  transform: translateY(0%);
+}
+
+.underline-effect{
+  position: relative;
+  cursor: pointer;
+  
+}
+.underline-effect{
+  position: relative;
+  cursor: pointer;
+  
+}
+
+.underline-effect::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  background-color: white;
+  left:-2px;
+  bottom: 0;
+  transform-origin: right;
+  transition: transform 300ms cubic-bezier(.25,1.08,.68,.98);
+}
+
+.arrow{
+  transition: rotate 700ms cubic-bezier(.25,1.08,.68,.98);
+}
+.arrow-rotate:hover .arrow{
+  rotate: 45deg;
+}
+
+.arrow-translate:hover .arrow-down{
+  animation: translate-down 600ms cubic-bezier(.25,1.08,.68,.98) forwards;
+  animation-iteration-count: 1;
+
+}
+
+@keyframes translate-down {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(0%); }
+}

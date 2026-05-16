@@ -1,0 +1,18 @@
+.underline-effect{
+  position: relative;
+  cursor: pointer;
+  
+}
+
+.underline-effect::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  background-color: white;
+  left:-2px;
+  bottom: 0;
+  transform-origin: right;
+  transition: transform 300ms cubic-bezier(.25,1.08,.68,.98);
+}

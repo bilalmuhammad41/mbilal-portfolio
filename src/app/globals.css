@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, body, html {
+  box-sizing: border-box;
+  font-family: "Gilroy", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+@font-face {
+  font-family: "Gilroy-semibold";
+  src:
+    local("Gilroy"),
+    url("/fonts/Gilroy/Gilroy-SemiBold.ttf") format("truetype");
+  font-weight: semibold;
+}
+
+@font-face {
+  font-family: "Gilroy-normal";
+  src:
+    local("Gilroy"),
+    url("/fonts/Gilroy/Gilroy-Regular.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Gilroy-medium";
+  src:
+    local("Gilroy"),
+    url("/fonts/Gilroy/Gilroy-Medium.ttf") format("truetype");
+  font-weight: medium;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+#smooth-wrapper {
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+}
+
+#smooth-content {
+  overflow: visible;
+  width: 100%;
+}

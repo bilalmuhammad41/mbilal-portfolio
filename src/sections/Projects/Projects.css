@@ -1,0 +1,8 @@
+.project{
+  transition: all 600ms cubic-bezier(.25,1.08,.68,.98);
+}
+
+.project:hover{
+  transform: translateX(5%);
+  color: #2a2a2a
+}
