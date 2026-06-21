@@ -1,24 +1,28 @@
 const projects = [
   {
     title: "this is digital",
+    slug: "this-is-digital",
     description: "A cinematic digital agency landing page replica",
     link: "https://bilalmuhammad41.github.io/this-is-digital-replica/",
     year: "2022",
   },
   {
     title: "hoo bank",
+    slug: "hoo-bank",
     description: "Modern fintech landing page with clean UI patterns",
     link: "https://bilalmuhammad41.github.io/fintech_website/",
     year: "2022",
   },
   {
     title: "nike",
+    slug: "nike",
     description: "Bold product landing page with dynamic layout",
     link: "https://bilalmuhammad41.github.io/Nike-LandingPage/",
     year: "2022",
   },
   {
     title: "my todo",
+    slug: "my-todo",
     description: "Minimal task manager built with vanilla JavaScript",
     link: "https://bilalmuhammad41.github.io/todo_List/",
     year: "2023",
@@ -26,19 +30,20 @@ const projects = [
 ];
 
 const NavItems = [
-  { title: "projects", link: "/projects" },
-  { title: "services", link: "/services" },
-  { title: "blog", link: "/blog" },
-  { title: "contact", link: "/contact" },
+  { title: "Projects", link: "/projects" },
+  { title: "Services", link: "/services" },
+  { title: "Blog", link: "/blog" },
+  { title: "Contact", link: "/contact" },
 ];
 
 const MobileNavItems = [
-  { title: "home", link: "/" },
-  { title: "projects", link: "/projects" },
-  { title: "services", link: "/services" },
-  { title: "blog", link: "/blog" },
-  { title: "contact", link: "/contact" },
-  { title: "github", link: "https://github.com/bilalmuhammad41" },
+  { title: "Home", link: "/" },
+  { title: "Projects", link: "/projects" },
+  { title: "Services", link: "/services" },
+  { title: "Blog", link: "/blog" },
+  { title: "Contact", link: "/contact" },
+  { title: "GitHub", link: "https://github.com/bilalmuhammad41" },
+  { title: "LinkedIn", link: "https://www.linkedin.com/in/mbilal41/" },
 ];
 
 const skills = [

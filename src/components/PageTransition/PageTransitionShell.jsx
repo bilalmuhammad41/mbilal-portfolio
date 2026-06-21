@@ -12,7 +12,6 @@ import { normalizeSlug } from "@/lib/slug";
 import {
   fadeContentIn,
   revealContentUnderCurtain,
-  setContentHidden,
   slideCurtainUp,
 } from "./transitions";
 import { PageTransitionProvider } from "./PageTransitionContext";
@@ -47,20 +46,30 @@ const PageTransitionShell = ({ formattedTime, children }) => {
   };
 
   const playEnter = useCallback((slug, { skipCurtain = false } = {}) => {
-    const { contentEl, rootEl } = getPageElements(slug);
-    if (!contentEl) return Promise.resolve();
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => {
+        const { contentEl, rootEl } = getPageElements(slug);
+        if (!contentEl) {
+          resolve();
+          return;
+        }
 
-    if (skipCurtain) {
-      setContentHidden(contentEl);
-      return fadeContentIn(contentEl, rootEl);
-    }
+        const animation = skipCurtain
+          ? fadeContentIn(contentEl, rootEl)
+          : revealContentUnderCurtain(
+              curtainRef.current,
+              overlayRef.current,
+              contentEl,
+              rootEl
+            );
 
-    return revealContentUnderCurtain(
-      curtainRef.current,
-      overlayRef.current,
-      contentEl,
-      rootEl
-    );
+        if (animation?.then) {
+          animation.then(resolve);
+        } else {
+          resolve();
+        }
+      });
+    });
   }, []);
 
   const runTransition = useCallback(
@@ -143,16 +152,19 @@ const PageTransitionShell = ({ formattedTime, children }) => {
       {children}
       <main className="main w-full bg-[var(--bg)]">
         <div className="site-views">
-          {Object.entries(PAGE_REGISTRY).map(([slug, { component: View }]) => (
-            <PageView
-              key={slug}
-              slug={slug}
-              isActive={activeSlug === slug}
-              registerPageRef={registerPageRef}
-            >
-              <View formattedTime={formattedTime} />
-            </PageView>
-          ))}
+          {Object.entries(PAGE_REGISTRY).map(([slug, entry]) => {
+            const View = entry.component;
+            return (
+              <PageView
+                key={slug}
+                slug={slug}
+                isActive={activeSlug === slug}
+                registerPageRef={registerPageRef}
+              >
+                <View project={entry.project} formattedTime={formattedTime} />
+              </PageView>
+            );
+          })}
         </div>
       </main>
       <TransitionCurtain ref={curtainRef} />

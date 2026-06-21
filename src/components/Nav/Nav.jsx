@@ -3,47 +3,27 @@
 import { useState, useEffect } from "react";
 import { NavItems, MobileNavItems } from "../../constants";
 import TransitionLink from "../PageTransition/TransitionLink";
+import NavRollLink from "./NavRollLink";
 import ThemeToggle from "../Theme/ThemeToggle";
 import { isInternalPath } from "@/lib/slug";
 import "./Nav.css";
 
 const Nav = ({ formattedTime }) => {
-  const [menuBtnVisible, setMenuBtnVisible] = useState(true);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [mobileMenuBtnVisible, setMobileMenuBtnVisible] = useState(true);
   const [closeBtnVisible, setCloseBtnVisible] = useState(false);
   const [logoVisible, setLogoVisible] = useState(true);
 
+  const closeDesktopMenu = () => setDesktopMenuOpen(false);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const navLinks = document.querySelectorAll(".nav-link");
-      navLinks.forEach((link, index) => {
-        setTimeout(() => {
-          link.classList.remove("menu-visible");
-          link.classList.remove("underline-effect");
-          link.classList.add("menu-not-visible");
-        }, index * 10);
-      });
-
-      setMenuBtnVisible(true);
-    };
-
+    const handleScroll = () => closeDesktopMenu();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleMenuClick = () => {
-    setMenuBtnVisible(false);
-
-    const navLinks = document.querySelectorAll(".nav-link");
-    navLinks.forEach((link, index) => {
-      setTimeout(() => {
-        link.classList.add("menu-visible");
-        link.classList.add("underline-effect");
-        link.classList.remove("menu-not-visible");
-      }, index * 40);
-    });
-  };
+  const handleMenuClick = () => setDesktopMenuOpen(true);
 
   const closeBtnClick = () => {
     setCloseBtnVisible(false);
@@ -95,7 +75,11 @@ const Nav = ({ formattedTime }) => {
     setMobileMenuBtnVisible(false);
   };
 
-  const renderNavLink = (item, className, onNavigate) => {
+  const handleDesktopNavClick = () => {
+    closeDesktopMenu();
+  };
+
+  const renderMobileNavLink = (item, className, onNavigate) => {
     if (isInternalPath(item.link)) {
       return (
         <TransitionLink
@@ -129,39 +113,52 @@ const Nav = ({ formattedTime }) => {
         </TransitionLink>
 
         <div className="nav-right">
-          <ThemeToggle className="nav-theme-toggle max-sm:hidden" />
-
-          <ul className="nav-links sm:flex hidden">
-            {NavItems.map((item, index) => (
-              <li
-                className="nav-link select-none menu-not-visible"
-                key={index}
-              >
-                {renderNavLink(item, "")}
-              </li>
-            ))}
-          </ul>
-
           <div
-            className="sm:flex hidden menu-btn-container overflow-hidden absolute z-10"
-            onClick={handleMenuClick}
+            className={`nav-menu-stack sm:flex hidden ${desktopMenuOpen ? "nav-menu-stack--open" : ""}`}
           >
-            <button
-              className={`menu-button ${menuBtnVisible ? "menu-button-visible underline-effect" : "menu-button-not-visible"}`}
-            >
-              <span>Menu</span>
-              <span className="menu-plus">+</span>
-            </button>
+            <div className="nav-menu-slot">
+              <ul className="nav-links">
+                {NavItems.map((item, index) => (
+                  <li
+                    className={`nav-link select-none ${desktopMenuOpen ? "menu-visible" : "menu-not-visible"}`}
+                    key={index}
+                    style={{ transitionDelay: desktopMenuOpen ? `${index * 40}ms` : `${index * 10}ms` }}
+                  >
+                    <NavRollLink
+                      href={item.link}
+                      external={!isInternalPath(item.link)}
+                      onClick={handleDesktopNavClick}
+                    >
+                      {item.title}
+                    </NavRollLink>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="menu-btn-container" onClick={handleMenuClick}>
+                <div
+                  className={`menu-btn-track ${desktopMenuOpen ? "menu-button-not-visible" : "menu-button-visible"}`}
+                >
+                  <button type="button" className="menu-button">
+                    <span>Menu</span>
+                    <span className="menu-plus">+</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div
-            className={`max-sm:flex hidden menu-btn-container overflow-hidden absolute ${mobileMenuBtnVisible ? "menu-button-visible underline-effect" : "menu-button-not-visible"}`}
-            onClick={handleMobileMenuClick}
-          >
-            <button className="menu-button">
-              <span>Menu</span>
-              <span className="menu-plus">+</span>
-            </button>
+          <div className="nav-actions">
+            <ThemeToggle />
+            <div
+              className={`max-sm:flex hidden menu-btn-container ${mobileMenuBtnVisible ? "menu-button-visible" : "menu-button-not-visible"}`}
+              onClick={handleMobileMenuClick}
+            >
+              <button type="button" className="menu-button">
+                <span>Menu</span>
+                <span className="menu-plus">+</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -179,14 +176,17 @@ const Nav = ({ formattedTime }) => {
               Muhammad Bilal
             </TransitionLink>
 
-            <div
-              className={`close-btn-container ${closeBtnVisible ? "close-btn-visible" : "close-btn-not-visible"}`}
-              onClick={closeBtnClick}
-            >
-              <button className="menu-button menu-button-dark">
-                <span>Close</span>
-                <span className="menu-plus">×</span>
-              </button>
+            <div className="mobile-menu-header-actions">
+              <ThemeToggle className="mobile-theme-toggle" />
+              <div
+                className={`close-btn-container ${closeBtnVisible ? "close-btn-visible" : "close-btn-not-visible"}`}
+                onClick={closeBtnClick}
+              >
+                <button type="button" className="menu-button menu-button-dark">
+                  <span>Close</span>
+                  <span className="menu-plus">×</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ const Nav = ({ formattedTime }) => {
           <ul>
             {MobileNavItems.map((item, index) => (
               <li key={index} className="mobile-nav-items overflow-hidden">
-                {renderNavLink(
+                {renderMobileNavLink(
                   item,
                   "mobile-nav-items-text",
                   closeBtnClick
@@ -206,7 +206,6 @@ const Nav = ({ formattedTime }) => {
         </div>
 
         <div className="mobile-menu-footer section-container">
-          <ThemeToggle className="mobile-theme-toggle" />
           <span className="mobile-nav-bottom-text mobile-nav-bottom-text-not-visible">
             2026
           </span>

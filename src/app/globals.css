@@ -28,9 +28,9 @@
   --text-dim: #9a9a9a;
   --border: rgba(0, 0, 0, 0.12);
   --accent: #161616;
-  --overlay-scrim: rgba(0, 0, 0, 0.48);
-  --curtain-shadow: 0 -28px 80px rgba(0, 0, 0, 0.18);
-  --mobile-menu-bg: #e8e8e6;
+  --overlay-scrim: rgba(0, 0, 0, 0.5);
+  --curtain-shadow: 0 -28px 80px rgba(0, 0, 0, 0.16);
+  --mobile-menu-bg: #ebebea;
   --mobile-menu-text: #161616;
   --mobile-menu-border: rgba(0, 0, 0, 0.1);
 }

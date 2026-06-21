@@ -8,10 +8,11 @@ export default function BlogView() {
     <div className="view-page">
       <section className="blog section-container">
         <div className="page-header">
-          <p className="section-label">Journal</p>
+          <p className="section-label page-enter-fade">Journal</p>
           <PageTitle title="Blog" />
         </div>
 
+        <div className="page-enter-fade">
         <div className="blog-list">
           {blogPosts.map((post) => (
             <article key={post.slug} className="blog-card">
@@ -28,6 +29,7 @@ export default function BlogView() {
         <TransitionLink href="/contact" className="link-arrow blog-footer-link">
           Get in touch
         </TransitionLink>
+        </div>
       </section>
     </div>
   );
