@@ -1,0 +1,20 @@
+.theme-toggle {
+  font-family: inherit;
+  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  transition: color 300ms ease, border-color 300ms ease, background 300ms ease;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+  background: var(--bg-elevated);
+}

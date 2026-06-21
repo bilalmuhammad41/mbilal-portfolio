@@ -1,0 +1,43 @@
+.site-views {
+  position: relative;
+  width: 100%;
+  min-height: calc(100svh - clamp(55px, 8vw, 80px));
+  margin-top: clamp(55px, 8vw, 80px);
+}
+
+.page-view {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.page-view--active {
+  visibility: visible;
+  pointer-events: auto;
+  position: relative;
+  overflow: visible;
+  min-height: calc(100svh - clamp(55px, 8vw, 80px));
+}
+
+.page-view__content {
+  min-height: inherit;
+}
+
+.page-title {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.page-header {
+  padding-block: clamp(3rem, 10vw, 8rem);
+}
+
+.page-header .section-label {
+  margin-bottom: 1rem;
+}

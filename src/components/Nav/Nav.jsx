@@ -1,237 +1,225 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import "./Nav.css"
-import { MobileNavItems, NavItems } from '../../constants'
-import {lines, close} from '../../assets'
-import Image from "next/image";
+import { NavItems, MobileNavItems } from "../../constants";
+import TransitionLink from "../PageTransition/TransitionLink";
+import ThemeToggle from "../Theme/ThemeToggle";
+import { isInternalPath } from "@/lib/slug";
+import "./Nav.css";
 
-const Nav = ({formattedTime}) => {
-  const [scrolling, setScrolling] = useState(false)
-  const [logoVisible, setLogoVisible] = useState(true)
-  const [menuBtnVisible, setMenuBtnVisible] = useState(true)
-  const [mobileMenuVisible, setMobileMenuVisible] = useState(false)
-  const [mobileMenuBtnVisible, setMobileMenuBtnVisible] = useState(true)
-  const [closeBtnVisible, setCloseBtnVisible] = useState(false)
-  
+const Nav = ({ formattedTime }) => {
+  const [menuBtnVisible, setMenuBtnVisible] = useState(true);
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  const [mobileMenuBtnVisible, setMobileMenuBtnVisible] = useState(true);
+  const [closeBtnVisible, setCloseBtnVisible] = useState(false);
+  const [logoVisible, setLogoVisible] = useState(true);
+
   useEffect(() => {
     const handleScroll = () => {
-      setScrolling(true)
-      
-    const navLinks = document.querySelectorAll('.nav-link')
+      const navLinks = document.querySelectorAll(".nav-link");
+      navLinks.forEach((link, index) => {
+        setTimeout(() => {
+          link.classList.remove("menu-visible");
+          link.classList.remove("underline-effect");
+          link.classList.add("menu-not-visible");
+        }, index * 10);
+      });
 
-      navLinks.forEach((link, index)=>{
-        
-       setTimeout(()=>{
-          link.classList.remove('menu-visible')
-          link.classList.remove('underline-effect')
-          link.classList.add('menu-not-visible')}, index*10)
-      })
-      
-      setMenuBtnVisible(true)
+      setMenuBtnVisible(true);
     };
 
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleMenuClick = () =>{
-    setMenuBtnVisible(false)
-    setScrolling(false)
-    
-    const navLinks = document.querySelectorAll('.nav-link')
-    navLinks.forEach((link, index)=>{
-    
-    setTimeout(()=>{
-      link.classList.add('menu-visible')
-      link.classList.add('underline-effect')
-      link.classList.remove('menu-not-visible')}, index*40)  
+  const handleMenuClick = () => {
+    setMenuBtnVisible(false);
 
-    })
-  }
+    const navLinks = document.querySelectorAll(".nav-link");
+    navLinks.forEach((link, index) => {
+      setTimeout(() => {
+        link.classList.add("menu-visible");
+        link.classList.add("underline-effect");
+        link.classList.remove("menu-not-visible");
+      }, index * 40);
+    });
+  };
 
-  const closeBtnClick = ()=>{
-    setCloseBtnVisible(false)
-    setLogoVisible(false)
+  const closeBtnClick = () => {
+    setCloseBtnVisible(false);
+    setLogoVisible(false);
 
-    const mobileNavItemsText = document.querySelectorAll('.mobile-nav-items-text')
-      mobileNavItemsText.forEach((text)=>{
-        text.classList.remove('mobile-nav-items-text-visible')
-        text.classList.add('mobile-nav-items-text-not-visible')
-      })
-    
-    const mobileMenuBottomText = document.querySelectorAll('.mobile-nav-bottom-text')
-      mobileMenuBottomText.forEach((text)=>{
-        text.classList.remove("mobile-nav-bottom-text-visible")
-        text.classList.add("mobile-nav-bottom-text-not-visible")
-      })   
+    document
+      .querySelectorAll(".mobile-nav-items-text")
+      .forEach((text) => {
+        text.classList.remove("mobile-nav-items-text-visible");
+        text.classList.add("mobile-nav-items-text-not-visible");
+      });
 
-    setTimeout(()=>{
-      setMobileMenuBtnVisible(true)
-      setMobileMenuVisible(false)
-    }, 400)
-   
-  }
+    document
+      .querySelectorAll(".mobile-nav-bottom-text")
+      .forEach((text) => {
+        text.classList.remove("mobile-nav-bottom-text-visible");
+        text.classList.add("mobile-nav-bottom-text-not-visible");
+      });
 
-
-  //Time
-  
-  
-
+    setTimeout(() => {
+      setMobileMenuBtnVisible(true);
+      setMobileMenuVisible(false);
+    }, 400);
+  };
 
   const handleMobileMenuClick = () => {
-      setTimeout(()=>{
-        setCloseBtnVisible(true)
-        setLogoVisible(true)
+    setTimeout(() => {
+      setCloseBtnVisible(true);
+      setLogoVisible(true);
 
-        const mobileNavItemsText = document.querySelectorAll('.mobile-nav-items-text')
-        mobileNavItemsText.forEach((text)=>{
-          text.classList.add('mobile-nav-items-text-visible')
-          text.classList.remove('mobile-nav-items-text-not-visible') 
-        })
-       
-      }, 200)
+      document
+        .querySelectorAll(".mobile-nav-items-text")
+        .forEach((text) => {
+          text.classList.add("mobile-nav-items-text-visible");
+          text.classList.remove("mobile-nav-items-text-not-visible");
+        });
+    }, 200);
 
-      setTimeout(()=>{
-        const mobileMenuBottomText = document.querySelectorAll('.mobile-nav-bottom-text')
-        mobileMenuBottomText.forEach((text)=>{
-          text.classList.add("mobile-nav-bottom-text-visible")
-          text.classList.remove("mobile-nav-bottom-text-not-visible")
-        })
-      }, 400)
-      setMobileMenuVisible(true)
-      setMobileMenuBtnVisible(false)
+    setTimeout(() => {
+      document
+        .querySelectorAll(".mobile-nav-bottom-text")
+        .forEach((text) => {
+          text.classList.add("mobile-nav-bottom-text-visible");
+          text.classList.remove("mobile-nav-bottom-text-not-visible");
+        });
+    }, 400);
+
+    setMobileMenuVisible(true);
+    setMobileMenuBtnVisible(false);
+  };
+
+  const renderNavLink = (item, className, onNavigate) => {
+    if (isInternalPath(item.link)) {
+      return (
+        <TransitionLink
+          href={item.link}
+          className={className}
+          onClick={onNavigate}
+        >
+          {item.title}
+        </TransitionLink>
+      );
     }
 
-
-
-
+    return (
+      <a
+        href={item.link}
+        className={className}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onNavigate}
+      >
+        {item.title}
+      </a>
+    );
+  };
 
   return (
-    
-    <nav className= "flex fixed w-full xl:max-w-[1700px] z-10">
-      
+    <nav className="nav-bar">
+      <div className="nav-inner section-container">
+        <TransitionLink href="/" className="nav-logo">
+          Muhammad Bilal
+        </TransitionLink>
 
-      {/* Desktop Navbar */}
-      <div className='flex items-center justify-between w-full h-[80px] max-ss:h-[55px] py-5 max-ss:px-4 px-7 bg-black'>
-                       {/* Logo */}
-        <div className='text-white font-semibold'>
-          <h3 className='text-lg max-ss:text-[1rem]'>Muhammad Bilal</h3>
-        </div>
-                       {/* Right side Nav */}
-        <div className='flex flex-col justify-between items-end h-[30px] relative'>
-        
-                       {/* NavLinks */}
-          <ul className ='sm:flex hidden flex-col text-white font-semibold uppercase list-none items-end mt-1 overflow-hidden'>
-            <div className='flex gap-4 justify-center items-center'>
-              {
-                NavItems.map((item, index)=>(
-                  <li className={` nav-link select-none text-white text-[17px] menu-not-visible`}  key={index}><a href={item.link} target='_blank'>{item.title}</a></li>
-                ))
-              }
-            </div>
-           
+        <div className="nav-right">
+          <ThemeToggle className="nav-theme-toggle max-sm:hidden" />
+
+          <ul className="nav-links sm:flex hidden">
+            {NavItems.map((item, index) => (
+              <li
+                className="nav-link select-none menu-not-visible"
+                key={index}
+              >
+                {renderNavLink(item, "")}
+              </li>
+            ))}
           </ul>
-                       {/* Menu Button */}
-              
-          <div className='sm:flex hidden menu-btn-container overflow-hidden absolute z-10'
-            onClick={(e)=>handleMenuClick(e)}>
-      
-            <button className={` text-white select-none font-semibold text-[17px] menu-button flex justify-center items-center ${menuBtnVisible ? 'menu-button-visible underline-effect' : 'menu-button-not-visible'}`}>
-              <span >MENU</span>
-              <span className='text-gray-400'>+</span>
+
+          <div
+            className="sm:flex hidden menu-btn-container overflow-hidden absolute z-10"
+            onClick={handleMenuClick}
+          >
+            <button
+              className={`menu-button ${menuBtnVisible ? "menu-button-visible underline-effect" : "menu-button-not-visible"}`}
+            >
+              <span>Menu</span>
+              <span className="menu-plus">+</span>
             </button>
           </div>
 
-
-
-                       {/* Mobile Menu Button */}
-              
-          <div className={`max-sm:flex hidden menu-btn-container overflow-hidden absolute ${mobileMenuBtnVisible ? 'menu-button-visible underline-effect' : 'menu-button-not-visible'} `}
-            onClick={(e) => handleMobileMenuClick(e)}>
-      
-            <button className={` text-white select-none font-semibold text-[17px] max-ss:text-[1rem] mt-1 menu-button flex justify-center items-center `}>
-              <span >MENU</span>
-              <span className='text-gray-400'>+</span>
+          <div
+            className={`max-sm:flex hidden menu-btn-container overflow-hidden absolute ${mobileMenuBtnVisible ? "menu-button-visible underline-effect" : "menu-button-not-visible"}`}
+            onClick={handleMobileMenuClick}
+          >
+            <button className="menu-button">
+              <span>Menu</span>
+              <span className="menu-plus">+</span>
             </button>
           </div>
-
-              
-           
         </div>
       </div>
 
-              {/* Mobile Menu */}
+      <div
+        className={`mobile-menu max-sm:flex hidden ${mobileMenuVisible ? "mobile-menu-visible" : "mobile-menu-not-visible"}`}
+      >
+        <div className="mobile-menu-header section-container">
+          <div className="mobile-menu-header-inner">
+            <TransitionLink
+              href="/"
+              className={`nav-logo nav-logo-dark ${logoVisible ? "logo-visible" : "logo-not-visible"}`}
+              onClick={closeBtnClick}
+            >
+              Muhammad Bilal
+            </TransitionLink>
 
-              
-      <div className={`max-sm:flex flex-col justify-between absolute hidden w-[100svw] h-[100svh] bg-gray-400 ${ mobileMenuVisible? 'mobile-menu-visible':'mobile-menu-not-visible'} origin-top`}>
-          
-          {/* Mobile Nav */}
-        <div className='flex w-full h-[80px] border-b-[1px] border-gray-300 items-center justify-between py-5 px-7' > 
-                                 
-          {/* Top Container */}
-          <div className={`flex w-full items-center select-none h-[30px] overflow-hidden relative`}>
-            {/* Black Logo */}
-              <div className={`text-black font-semibold absolute ${logoVisible? 'logo-visible' : 'logo-not-visible'}`}>
-                <h3 className='text-lg'>Muhammad Bilal</h3>
-              </div>
-            
-            {/* Close Button */}
-          
-            <div className={`max-sm:flex right-0 z-10 hidden menu-btn-container overflow-hidden absolute ${closeBtnVisible ? 'close-btn-visible' : 'close-btn-not-visible'}`}
-                onClick={(e) => closeBtnClick(e)}>
-        
-              <button className={` text-black select-none font-semibold text-[17px] menu-button flex justify-center items-center `}>
-                  <span >CLOSE</span>
-                  <span className='ml-2 h-[13px] w-[13px]'><Image src={close} alt="" /></span>
+            <div
+              className={`close-btn-container ${closeBtnVisible ? "close-btn-visible" : "close-btn-not-visible"}`}
+              onClick={closeBtnClick}
+            >
+              <button className="menu-button menu-button-dark">
+                <span>Close</span>
+                <span className="menu-plus">×</span>
               </button>
             </div>
           </div>
         </div>
-        
-        {/* Menu Items */}
 
-          <div className={`h-[70%] w-full overflow-hidden`}>
-            <ul className='list-none w-full h-full px-5 mobile-nav-items-container'>
-              {MobileNavItems.map((item, index)=>(
-                  <div className={`w-full h-[55px] mobile-nav-items overflow-hidden cursor-pointer`} key={index}>
-                    <li className={`uppercase list-none font-medium mobile-nav-items-text`}>
-                      <a href={item.link} target='_blank'>{item.title}</a>
-                    </li>
-                  </div>
-              ))}
-            </ul>
-          </div>
+        <div className="mobile-menu-items">
+          <ul>
+            {MobileNavItems.map((item, index) => (
+              <li key={index} className="mobile-nav-items overflow-hidden">
+                {renderNavLink(
+                  item,
+                  "mobile-nav-items-text",
+                  closeBtnClick
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-            {/* Mobile Nav */}
-        <div className='flex bottom-0 w-full h-[80px] border-t-[1px] border-gray-300 items-center justify-between py-5 px-7' > 
-            
-            {/* Bottom Container */}
-            <div className={`flex w-full items-center  justify-between select-none h-[30px] overflow-hidden relative`}>
-              {/* Year */}
-                <div className={`text-black font-semibold mobile-nav-bottom-text mobile-nav-bottom-text-not-visible`}>
-                  <h3 className='text-lg mobile-nav-bottom-text'>2023</h3>
-                </div>
-              
-              {/* Time */}
-            
-              <div className={` text-black select-none font-semibold text-[17px] menu-button flex justify-center items-center `}>
-                  <span className='mobile-nav-bottom-text mobile-nav-bottom-text-not-visible' id='time'>{formattedTime}</span>           
-              </div>
-              
-            </div>
-          </div>
+        <div className="mobile-menu-footer section-container">
+          <ThemeToggle className="mobile-theme-toggle" />
+          <span className="mobile-nav-bottom-text mobile-nav-bottom-text-not-visible">
+            2026
+          </span>
+          <span
+            className="mobile-nav-bottom-text mobile-nav-bottom-text-not-visible"
+            id="time"
+          >
+            {formattedTime}
+          </span>
+        </div>
       </div>
-
-     
-          
     </nav>
-  
-    
-  )
-}
+  );
+};
 
-export default Nav
+export default Nav;

@@ -1,8 +1,98 @@
-.project{
-  transition: all 600ms cubic-bezier(.25,1.08,.68,.98);
+.projects {
+  padding-block: clamp(4rem, 12vw, 10rem);
 }
 
-.project:hover{
-  transform: translateX(5%);
-  color: #2a2a2a
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.project-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--border);
+  transition: opacity 300ms ease;
+}
+
+.project-card:first-child {
+  border-top: 1px solid var(--border);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.project-card:hover .project-card-title strong {
+  color: var(--text-muted);
+}
+
+.project-card:hover .project-card-placeholder {
+  transform: scale(1.02);
+}
+
+@media (min-width: 768px) {
+  .project-card {
+    grid-template-columns: 1fr 1.2fr;
+    align-items: center;
+    gap: 2rem;
+  }
+}
+
+.project-card-visual {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.project-card-placeholder {
+  aspect-ratio: 16 / 10;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 600ms cubic-bezier(0.25, 1.08, 0.68, 0.98);
+  border: 1px solid var(--border);
+}
+
+.project-card-index {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: -0.02em;
+}
+
+.project-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.project-card-title {
+  font-size: clamp(1.125rem, 2.5vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+.project-card-title strong {
+  font-weight: 600;
+  transition: color 300ms ease;
+}
+
+.project-card-dash {
+  color: var(--text-dim);
+}
+
+.project-card-year {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.projects-footer {
+  margin-top: clamp(2rem, 5vw, 4rem);
 }

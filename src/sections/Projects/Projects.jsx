@@ -1,32 +1,60 @@
-import React from 'react'
-import {NavItems} from '../../constants'
+"use client";
+
+import { useState } from "react";
+import { projects } from "../../constants";
 import "./Projects.css";
+import ProjectDetails from "../../components/ProjectDetails/ProjectDetails";
 
 const Projects = () => {
+  const [selectedProject, setSelectedProject] = useState(null);
+
   return (
-    <section className='w-full md:py-[15svh] sm:py-[10svh] ss:py-[10svh] xs:py-[7svh] bg-black xl:max-w-[1700px] md:px-12 sm:px-10 ss:px-6 px-5 '>
-      <div className='flex flex-col'>
-        
-        {/* Project Div */}
-        
-        {NavItems.filter(item => !['scents', 'contact', 'my todo'].includes(item.title)).map((item, index)=>(
-         <a
-         href={item.link}  // Replace 'item.link' with the actual link you want to open
-         target="_blank"   // Optional: Opens the link in a new tab
-         rel="noopener noreferrer"  // Recommended for security reasons when using target="_blank"
-         key={index}
-       >
-         <div className={`flex md:h-[250px] sm:h-[150px] ss:h-[120px] h-[90px] text-container border-white ${index === 0 ? 'border-t-[1px]':''} border-b-[1px] leading-none items-center cursor-pointer`}>
-           
-           {/* Project Title and Year */}
-           <h1 className='flex-1 text-[#a0a1a3] uppercase font-semibold md:text-[110px] sm:text-[80px] ss:text-[70px] text-[35px] text-container project'>{item.title}</h1>
-           <h3 className='text-white pr-2 font-semibold md:text-sm text-[0.7rem]'>{index === 0 ? '2022' : ''}{index === 1 ? '2022' : ''}{index === 2 ? '2022' : ''}</h3>
-         </div>
-       </a>
+    <section className="projects section-container" id="projects">
+      <p className="section-label">Portfolio</p>
+      <h2 className="section-heading">Featured projects</h2>
+
+      <div className="projects-list">
+        {projects.map((project, index) => (
+          <a
+            key={index}
+            href={project.link}
+            className="project-card"
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedProject(project);
+            }}
+          >
+            <div className="project-card-visual">
+              <div className="project-card-placeholder">
+                <span className="project-card-index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
+            </div>
+            <div className="project-card-info">
+              <h3 className="project-card-title">
+                <strong>{project.title}</strong>
+                <span className="project-card-dash"> – </span>
+                {project.description}
+              </h3>
+              <span className="project-card-year">{project.year}</span>
+            </div>
+          </a>
         ))}
       </div>
-    </section>
-  )
-}
 
-export default Projects
+      <div className="projects-footer">
+        <a href="#contact" className="link-arrow">
+          Get in touch
+        </a>
+      </div>
+
+      <ProjectDetails
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
+    </section>
+  );
+};
+
+export default Projects;
