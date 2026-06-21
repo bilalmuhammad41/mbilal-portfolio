@@ -1,64 +1,78 @@
-.text-container{
-  transition: all 600ms ease-out;
-}
-.not-visible{
-  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
-  transform: translateY(200%);
-}
-
-.visible{
-  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
-  transform: translateY(0%);
+.home {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: clamp(5rem, 12vw, 8rem);
+  padding-bottom: clamp(3rem, 8vw, 6rem);
 }
 
-.-not-visible{
-  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
-  transform: translateY(-100%);
+.home-hero {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 8vw, 6rem);
 }
 
-.visible{
-  transition: transform 700ms cubic-bezier(.25,1.08,.68,.98);
-  transform: translateY(0%);
+.home-headline {
+  font-size: clamp(2.5rem, 8vw, 7rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  max-width: 14ch;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
 }
 
-.underline-effect{
-  position: relative;
-  cursor: pointer;
-  
-}
-.underline-effect{
-  position: relative;
-  cursor: pointer;
-  
+.home-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 640px;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.underline-effect::after{
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  background-color: white;
-  left:-2px;
-  bottom: 0;
-  transform-origin: right;
-  transition: transform 300ms cubic-bezier(.25,1.08,.68,.98);
+.home-paragraph {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-.arrow{
-  transition: rotate 700ms cubic-bezier(.25,1.08,.68,.98);
-}
-.arrow-rotate:hover .arrow{
-  rotate: 45deg;
+.home-cta {
+  color: var(--text);
 }
 
-.arrow-translate:hover .arrow-down{
-  animation: translate-down 600ms cubic-bezier(.25,1.08,.68,.98) forwards;
-  animation-iteration-count: 1;
-
+.home-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  padding-top: clamp(1rem, 3vw, 2rem);
+  border-top: 1px solid var(--border);
 }
 
-@keyframes translate-down {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(0%); }
+.home-meta-item {
+  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.delay-200 {
+  transition-delay: 200ms;
+}
+
+.delay-300 {
+  transition-delay: 300ms;
+}
+
+.delay-400 {
+  transition-delay: 400ms;
+}
+
+.delay-500 {
+  transition-delay: 500ms;
+}
+
+.delay-600 {
+  transition-delay: 600ms;
 }

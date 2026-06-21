@@ -1,0 +1,117 @@
+.view-page {
+  width: 100%;
+}
+
+.home-preview {
+  padding-block: clamp(3rem, 8vw, 6rem);
+  border-top: 1px solid var(--border);
+}
+
+.home-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.home-preview-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 300ms ease;
+}
+
+.home-preview-item:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.home-preview-item:hover {
+  opacity: 0.6;
+}
+
+.home-preview-index {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.home-preview-title {
+  font-size: clamp(1rem, 2vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.home-contact-teaser {
+  padding-block: clamp(4rem, 12vw, 8rem);
+  border-top: 1px solid var(--border);
+}
+
+.home-contact-teaser .footer-headline {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 2rem;
+}
+
+.blog {
+  padding-block: clamp(2rem, 6vw, 4rem) clamp(4rem, 10vw, 8rem);
+}
+
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.blog-card {
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--border);
+}
+
+.blog-card:first-of-type {
+  border-top: 1px solid var(--border);
+}
+
+.blog-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.blog-card-title {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.blog-card-excerpt {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 640px;
+}
+
+.blog-footer-link {
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.skills {
+  border-top: none;
+}
+
+.projects {
+  padding-top: 0;
+}

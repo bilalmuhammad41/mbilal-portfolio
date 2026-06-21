@@ -1,0 +1,9 @@
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 48;
+  background: var(--overlay-scrim);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
