@@ -113,7 +113,6 @@ const PageTransitionShell = ({ formattedTime, children }) => {
 
     if (!hasPlayedInitial.current) {
       hasPlayedInitial.current = true;
-      setActiveSlug(slug);
 
       const timer = setTimeout(() => {
         playEnter(slug, { skipCurtain: true });
@@ -123,7 +122,12 @@ const PageTransitionShell = ({ formattedTime, children }) => {
     }
 
     if (slug !== activeSlug) {
-      runTransition(activeSlug, slug);
+      const fromSlug = activeSlug;
+      const frame = requestAnimationFrame(() => {
+        runTransition(fromSlug, slug);
+      });
+
+      return () => cancelAnimationFrame(frame);
     }
   }, [pathname, activeSlug, playEnter, runTransition]);
 

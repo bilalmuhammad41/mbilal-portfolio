@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "@/lib/useIsClient";
 import {
   splitTitleWords,
   slidePanelUp,
@@ -11,14 +12,9 @@ import {
 } from "@/components/PageTransition/transitions";
 
 const ProjectDetails = ({ project, onClose }) => {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
   const detailsRef = useRef(null);
   const contentRef = useRef(null);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
 
   useEffect(() => {
     if (!project || !mounted || !detailsRef.current || !contentRef.current) return;
