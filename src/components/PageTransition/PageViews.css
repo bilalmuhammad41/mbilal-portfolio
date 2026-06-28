@@ -28,16 +28,32 @@
 .page-title {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   font-size: clamp(2.5rem, 8vw, 6rem);
   font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.03em;
+  text-align: center;
 }
 
 .page-header {
   padding-block: clamp(3rem, 10vw, 8rem);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .page-header .section-label {
   margin-bottom: 1rem;
+}
+
+/* Pre-enter state — GSAP takes over on page enter */
+.page-view .page-title-word {
+  transform: translate3d(0, 100%, 0);
+}
+
+.page-view .page-enter-fade {
+  opacity: 0;
+  transform: translate3d(0, 3rem, 0);
 }

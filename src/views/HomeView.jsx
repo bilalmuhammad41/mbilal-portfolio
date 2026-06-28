@@ -72,8 +72,8 @@ export default function HomeView() {
         <div className="home-preview-list">
           {featured.map((project, index) => (
             <TransitionLink
-              key={project.title}
-              href="/projects"
+              key={project.slug}
+              href={`/projects/${project.slug}`}
               className="home-preview-item"
             >
               <span className="home-preview-index">

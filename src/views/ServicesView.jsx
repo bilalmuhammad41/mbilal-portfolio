@@ -9,10 +9,11 @@ export default function ServicesView() {
     <div className="view-page">
       <section className="skills section-container">
         <div className="page-header">
-          <p className="section-label">Expertise</p>
+          <p className="section-label page-enter-fade">Expertise</p>
           <PageTitle title="Our services" />
         </div>
 
+        <div className="page-enter-fade">
         <p className="skills-subtitle">
           From motion-driven interfaces to performant web apps — I design and
           build digital experiences for the modern web.
@@ -31,6 +32,7 @@ export default function ServicesView() {
           <TransitionLink href="/projects" className="link-arrow">
             View all projects
           </TransitionLink>
+        </div>
         </div>
       </section>
     </div>

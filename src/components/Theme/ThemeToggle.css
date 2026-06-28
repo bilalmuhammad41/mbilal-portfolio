@@ -1,15 +1,17 @@
 .theme-toggle {
-  font-family: inherit;
-  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
   color: var(--text-muted);
-  background: none;
+  background: transparent;
   border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 0.4rem 0.85rem;
+  border-radius: 50%;
   cursor: pointer;
+  flex-shrink: 0;
   transition: color 300ms ease, border-color 300ms ease, background 300ms ease;
 }
 
@@ -17,4 +19,34 @@
   color: var(--text);
   border-color: var(--text-muted);
   background: var(--bg-elevated);
+}
+
+.theme-toggle__icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.85) rotate(-20deg);
+  transition: opacity 300ms ease, transform 300ms ease;
+  pointer-events: none;
+}
+
+.theme-toggle__icon.is-visible {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.mobile-theme-toggle {
+  color: var(--mobile-menu-text);
+  border-color: var(--mobile-menu-border);
+}
+
+.mobile-theme-toggle:hover {
+  color: var(--mobile-menu-text);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="dark"] .mobile-theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.08);
 }

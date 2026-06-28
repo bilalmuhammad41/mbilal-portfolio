@@ -4,52 +4,76 @@ export const splitTitleWords = (title) => title.split(/\s+/).filter(Boolean);
 
 /** Slow → fast → slow kinetic easing for the curtain slide */
 export const CURTAIN_EASE = "power4.inOut";
-export const CURTAIN_DURATION = 1.15;
+export const CURTAIN_DURATION = 0.9;
 
-const CURTAIN_HOLD = 0.2;
+const CURTAIN_HOLD = 0.12;
+const TITLE_DURATION = 0.85;
+const TITLE_STAGGER = 0.08;
 
-export function setContentHidden(contentEl) {
-  if (!contentEl) return;
-  gsap.set(contentEl, { opacity: 0, y: 24 });
+function getFadeTargets(rootEl) {
+  if (!rootEl) return [];
+  return Array.from(rootEl.querySelectorAll(".page-enter-fade"));
 }
 
-export function fadeContentOut(contentEl) {
-  if (!contentEl) return Promise.resolve();
-  return gsap.to(contentEl, {
-    opacity: 0,
-    y: 16,
-    duration: 0.45,
-    ease: "power2.in",
+function getTitleWords(rootEl) {
+  return rootEl?.querySelectorAll(".page-title-word") ?? [];
+}
+
+function preparePageEnter(contentEl, rootEl) {
+  if (!contentEl) return;
+
+  gsap.set(contentEl, { opacity: 1, y: 0 });
+
+  const words = getTitleWords(rootEl);
+  gsap.set(words, { y: "100%", opacity: 1 });
+
+  getFadeTargets(rootEl).forEach((el) => {
+    gsap.set(el, { opacity: 0, y: 48 });
   });
+}
+
+function animateTitleStagger(rootEl, timeline, position) {
+  const words = getTitleWords(rootEl);
+  if (!words.length) return;
+
+  timeline.fromTo(
+    words,
+    { y: "100%" },
+    {
+      y: "0%",
+      duration: TITLE_DURATION,
+      ease: "power4.out",
+      stagger: TITLE_STAGGER,
+    },
+    position
+  );
+}
+
+function animateBodyFadeIn(rootEl, timeline, position) {
+  const fadeTargets = getFadeTargets(rootEl);
+  if (!fadeTargets.length) return;
+
+  timeline.to(
+    fadeTargets,
+    {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: "power3.out",
+      stagger: 0.1,
+    },
+    position
+  );
 }
 
 export function fadeContentIn(contentEl, rootEl) {
   if (!contentEl) return Promise.resolve();
 
-  const words = rootEl?.querySelectorAll(".page-title-word") ?? [];
-  gsap.set(words, { y: "100%" });
+  preparePageEnter(contentEl, rootEl);
 
   const tl = gsap.timeline();
-
-  tl.to(contentEl, {
-    opacity: 1,
-    y: 0,
-    duration: 0.6,
-    ease: "power2.out",
-  });
-
-  if (words.length) {
-    tl.to(
-      words,
-      {
-        y: "0%",
-        duration: 0.7,
-        ease: "power4.out",
-        stagger: 0.06,
-      },
-      "-=0.35"
-    );
-  }
+  animateTitleStagger(rootEl, tl, 0);
+  animateBodyFadeIn(rootEl, tl);
 
   return tl;
 }
@@ -107,127 +131,30 @@ export function slideCurtainUp(curtainEl, overlayEl) {
 export function revealContentUnderCurtain(curtainEl, overlayEl, contentEl, rootEl) {
   if (!contentEl) return Promise.resolve();
 
-  setContentHidden(contentEl);
-  const words = rootEl?.querySelectorAll(".page-title-word") ?? [];
-  gsap.set(words, { y: "100%" });
+  preparePageEnter(contentEl, rootEl);
 
   const tl = gsap.timeline();
 
-  tl.to({}, { duration: CURTAIN_HOLD })
-    .to(contentEl, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
+  tl.to({}, { duration: CURTAIN_HOLD });
+
+  tl.to(
+    curtainEl,
+    {
+      opacity: 0,
+      duration: 0.15,
       ease: "power2.out",
-    })
-    .to(
-      curtainEl,
-      {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.out",
-      },
-      "-=0.25"
-    );
+    },
+    0
+  );
 
   if (overlayEl) {
-    tl.to(
-      overlayEl,
-      {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.out",
-      },
-      "-=0.5"
-    );
+    tl.set(overlayEl, { opacity: 0 }, 0);
   }
 
-  if (words.length) {
-    tl.to(
-      words,
-      {
-        y: "0%",
-        duration: 0.7,
-        ease: "power4.out",
-        stagger: 0.06,
-      },
-      "-=0.55"
-    );
-  }
+  animateTitleStagger(rootEl, tl, "+=0.00");
+  animateBodyFadeIn(rootEl, tl, "+=0.0");
 
   tl.set(curtainEl, { yPercent: 100, opacity: 1 });
-
-  if (overlayEl) {
-    tl.set(overlayEl, { opacity: 0 });
-  }
-
-  return tl;
-}
-
-export function slidePanelUp(panelEl) {
-  if (!panelEl) return gsap.timeline();
-
-  gsap.set(panelEl, {
-    y: "100%",
-    borderTopLeftRadius: "40px",
-    borderTopRightRadius: "40px",
-  });
-
-  const tl = gsap.timeline();
-
-  tl.to(panelEl, {
-    y: "0%",
-    duration: 1,
-    ease: CURTAIN_EASE,
-  }).to(
-    panelEl,
-    {
-      borderTopLeftRadius: "0px",
-      borderTopRightRadius: "0px",
-      duration: 0.2,
-    },
-    "-=0.2"
-  );
-
-  return tl;
-}
-
-export function slidePanelDown(panelEl) {
-  if (!panelEl) return gsap.timeline();
-
-  return gsap.to(panelEl, {
-    y: "100%",
-    borderTopLeftRadius: "40px",
-    borderTopRightRadius: "40px",
-    duration: 0.6,
-    ease: "power3.inOut",
-  });
-}
-
-export function enterPanelContent(contentEl, rootEl) {
-  if (!contentEl) return gsap.timeline();
-
-  setContentHidden(contentEl);
-  const words = rootEl?.querySelectorAll(".project-title-word") ?? [];
-  gsap.set(words, { y: "100%" });
-
-  const tl = gsap.timeline();
-
-  tl.to(contentEl, {
-    opacity: 1,
-    y: 0,
-    duration: 0.6,
-    ease: "power2.out",
-  }).to(
-    words,
-    {
-      y: "0%",
-      duration: 0.7,
-      ease: "power4.out",
-      stagger: 0.06,
-    },
-    "-=0.45"
-  );
 
   return tl;
 }

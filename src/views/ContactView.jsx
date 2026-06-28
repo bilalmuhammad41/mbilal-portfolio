@@ -26,16 +26,15 @@ export default function ContactView() {
   return (
     <div className="view-page">
       <section className="contact section-container">
-        <div className="contact-intro">
-          <p className="section-label">Get in touch</p>
-          <h2 className="contact-headline">
-            Hey! Tell us all
-            <br />
-            the things
-          </h2>
+        <div className="page-header contact-intro">
+          <p className="section-label page-enter-fade">Get in touch</p>
+          <PageTitle
+            title="Hey! Tell us all the things"
+            className="contact-headline page-title"
+          />
         </div>
 
-        <form className="contact-form" onSubmit={handleSubmit} noValidate>
+        <form className="contact-form page-enter-fade" onSubmit={handleSubmit} noValidate>
           <fieldset className="contact-fieldset">
             <legend className="contact-legend">I&apos;m interested in...</legend>
             <div className="contact-chips">
