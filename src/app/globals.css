@@ -21,7 +21,7 @@
 }
 
 [data-theme="light"] {
-  --bg: #f4f4f2;
+  --bg: #ebebeb;
   --bg-elevated: #ffffff;
   --text: #161616;
   --text-muted: #6b6b6b;
@@ -37,7 +37,7 @@
 
 *, body, html {
   box-sizing: border-box;
-  font-family: "Gogo", sans-serif;
+  font-family: "DM Sans", sans-serif;
   margin: 0;
   padding: 0;
 }

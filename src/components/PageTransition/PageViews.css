@@ -29,10 +29,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  font-size: clamp(2.5rem, 8vw, 6rem);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.5rem, 12vw, 14rem);
+  font-weight: 900;
+  line-height: .85;
+  letter-spacing: 0em;
   text-align: center;
 }
 
@@ -48,8 +48,7 @@
   margin-bottom: 1rem;
 }
 
-/* Pre-enter state — GSAP takes over on page enter */
-.page-view .page-title-word {
+.page-view .page-title-letter {
   transform: translate3d(0, 100%, 0);
 }
 

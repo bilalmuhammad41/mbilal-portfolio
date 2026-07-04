@@ -30,7 +30,7 @@ const projects = [
 ];
 
 const NavItems = [
-  { title: "Projects", link: "/projects" },
+  { title: "Work", link: "/projects" },
   { title: "Services", link: "/services" },
   { title: "Blog", link: "/blog" },
   { title: "Contact", link: "/contact" },
@@ -38,7 +38,7 @@ const NavItems = [
 
 const MobileNavItems = [
   { title: "Home", link: "/" },
-  { title: "Projects", link: "/projects" },
+  { title: "Work", link: "/projects" },
   { title: "Services", link: "/services" },
   { title: "Blog", link: "/blog" },
   { title: "Contact", link: "/contact" },

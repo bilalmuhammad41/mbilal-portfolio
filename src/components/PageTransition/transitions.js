@@ -1,22 +1,23 @@
 import gsap from "gsap";
 
-export const splitTitleWords = (title) => title.split(/\s+/).filter(Boolean);
+export const splitTitleLetters = (title) => title.split("");
 
 /** Slow → fast → slow kinetic easing for the curtain slide */
 export const CURTAIN_EASE = "power4.inOut";
 export const CURTAIN_DURATION = 0.9;
 
 const CURTAIN_HOLD = 0.12;
-const TITLE_DURATION = 0.85;
-const TITLE_STAGGER = 0.08;
+
+const TITLE_DURATION = 0.65; 
+const TITLE_STAGGER = 0.075; 
 
 function getFadeTargets(rootEl) {
   if (!rootEl) return [];
   return Array.from(rootEl.querySelectorAll(".page-enter-fade"));
 }
 
-function getTitleWords(rootEl) {
-  return rootEl?.querySelectorAll(".page-title-word") ?? [];
+function getTitleLetters(rootEl) {
+  return rootEl?.querySelectorAll(".page-title-letter") ?? [];
 }
 
 function preparePageEnter(contentEl, rootEl) {
@@ -24,8 +25,8 @@ function preparePageEnter(contentEl, rootEl) {
 
   gsap.set(contentEl, { opacity: 1, y: 0 });
 
-  const words = getTitleWords(rootEl);
-  gsap.set(words, { y: "100%", opacity: 1 });
+  const letters = getTitleLetters(rootEl);
+  gsap.set(letters, { y: "100%", opacity: 1 });
 
   getFadeTargets(rootEl).forEach((el) => {
     gsap.set(el, { opacity: 0, y: 48 });
@@ -33,11 +34,11 @@ function preparePageEnter(contentEl, rootEl) {
 }
 
 function animateTitleStagger(rootEl, timeline, position) {
-  const words = getTitleWords(rootEl);
-  if (!words.length) return;
+  const letters = getTitleLetters(rootEl);
+  if (!letters.length) return;
 
   timeline.fromTo(
-    words,
+    letters,
     { y: "100%" },
     {
       y: "0%",

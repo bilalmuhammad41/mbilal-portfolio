@@ -1,23 +1,33 @@
 "use client";
 
-import { splitTitleWords } from "./transitions";
 
 export function PageTitle({ title, className = "" }) {
-  const words = splitTitleWords(title);
+  const words = (title || "").split(" ");
 
   return (
     <h1
       className={`page-title ${className}`}
       aria-label={title}
     >
-      {words.map((word, index) => (
-        <span key={`${word}-${index}`} className="overflow-hidden inline-block">
-          <span className="page-title-word inline-block">
-            {word}
-            {index < words.length - 1 ? "\u00A0" : ""}
+      {words.map((word, wordIndex) => {
+        const letters = word.split("");
+
+        return (
+          <span key={`word-${wordIndex}`} className="inline-block whitespace-nowrap">
+            <span className="overflow-hidden inline-block">
+              {letters.map((letter, letterIndex) => (
+                <span 
+                  key={`letter-${wordIndex}-${letterIndex}`} 
+                  className="page-title-letter inline-block"
+                >
+                  {letter}
+                </span>
+              ))}
+            </span>
+            {wordIndex < words.length - 1 ? "\u00A0" : ""}
           </span>
-        </span>
-      ))}
+        );
+      })}
     </h1>
   );
 }
