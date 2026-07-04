@@ -3,18 +3,12 @@ name: Deploy to GitHub Pages
 on:
   workflow_dispatch:
     inputs:
-      git_ref:
-        description: "Git ref to deploy (Must be 'main' or 'release/v*')"
-        required: true
-        default: main
-        type: string
       confirm:
-        description: "Type 'deploy' to confirm production launch"
+        description: "Type 'deploy' to confirm production deployment"
         required: true
         type: string
 
-
-run-name: Deploy ${{ inputs.git_ref }} to GitHub Pages
+run-name: Deploy ${{ github.ref_name }} to GitHub Pages
 
 concurrency:
   group: pages-deploy-${{ github.repository }}
@@ -29,27 +23,25 @@ env:
 
 jobs:
   guard:
-    name: Confirm deployment
+    name: Validate deployment
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+
     steps:
-      - name: Validate confirmation
+      - name: Validate deployment
         run: |
           set -euo pipefail
+
           if [[ "${{ inputs.confirm }}" != "deploy" ]]; then
-            echo "::error::Deployment not confirmed. Re-run the workflow and type deploy in the confirm field."
-            exit 1
-          fi
-          if [[ -z "${{ inputs.git_ref }}" ]]; then
-            echo "::error::git_ref is required."
+            echo "::error::Type 'deploy' to confirm deployment."
             exit 1
           fi
 
-          REF="${{ inputs.git_ref }}"
-          if [[ "$REF" == "main" || "$REF" =~ ^release.* ]]; then
-            echo "Trunk-based branch validation passed for ref: $REF"
+          REF="${{ github.ref_name }}"
+
+          if [[ "$REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "Deploying release tag: $REF"
           else
-            echo "::error::Deployment blocked! You can only deploy from 'main' or a 'release.*' branch."
+            echo "::error::This workflow only deploys version tags (v1.2.3)."
             exit 1
           fi
 
@@ -57,7 +49,7 @@ jobs:
     name: Build static site
     needs: guard
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+
     outputs:
       commit_sha: ${{ steps.meta.outputs.commit_sha }}
       commit_short: ${{ steps.meta.outputs.commit_short }}
@@ -65,115 +57,73 @@ jobs:
       deployed_at: ${{ steps.meta.outputs.deployed_at }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.git_ref }}
           fetch-depth: 0
 
-      - name: Resolve deployment metadata
-        id: meta
+      - id: meta
         run: |
-          set -euo pipefail
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          echo "commit_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-          echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-          if [[ -n "${{ inputs.release_tag }}" ]]; then
-            echo "release_label=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "release_label=${{ inputs.git_ref }}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "release_label=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Build static export
-        run: npm run build
-
-      - name: Verify export output
+      - name: Verify export
         run: |
-          set -euo pipefail
-          EXPORT_ROOT="out"
-          if [[ ! -f "${EXPORT_ROOT}/index.html" ]]; then
-            echo "::error::Missing ${EXPORT_ROOT}/index.html"
-            find out -maxdepth 3 -type f | head -50 || true
-            exit 1
-          fi
-          if [[ ! -f "${EXPORT_ROOT}/.nojekyll" ]]; then
-            echo "::error::Missing ${EXPORT_ROOT}/.nojekyll"
-            exit 1
-          fi
-          if ! grep -q '"/mbilal-portfolio/_next/' "${EXPORT_ROOT}/index.html"; then
-            echo "::error::index.html is missing /mbilal-portfolio base path prefixes."
-            exit 1
-          fi
-          for asset in Logo.png profile_picture.jpg lines.png; do
-            if [[ ! -f "${EXPORT_ROOT}/${asset}" ]]; then
-              echo "::error::Missing asset ${EXPORT_ROOT}/${asset}"
-              exit 1
-            fi
-          done
-          echo "Export verification passed."
+          test -f out/index.html
+          test -f out/.nojekyll
 
       - name: Write deployment manifest
         run: |
-          set -euo pipefail
           cat > out/deployment.json <<EOF
           {
-            "site": "mbilal-portfolio",
-            "release": "${{ steps.meta.outputs.release_label }}",
-            "gitRef": "${{ inputs.git_ref }}",
-            "commit": "${{ steps.meta.outputs.commit_sha }}",
-            "deployedAt": "${{ steps.meta.outputs.deployed_at }}",
-            "basePath": "${{ env.NEXT_PUBLIC_BASE_PATH }}",
-            "workflowRun": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            "site":"mbilal-portfolio",
+            "release":"${{ github.ref_name }}",
+            "commit":"${{ steps.meta.outputs.commit_sha }}",
+            "deployedAt":"${{ steps.meta.outputs.deployed_at }}"
           }
           EOF
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: out
 
   deploy:
-    name: Deploy to GitHub Pages
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     permissions:
       contents: read
       pages: write
       id-token: write
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deploy
         uses: actions/deploy-pages@v4
 
-      - name: Deployment summary
+      - name: Summary
         run: |
           {
-            echo "## GitHub Pages deployment"
+            echo "## 🚀 Deployment Complete"
             echo ""
             echo "| Field | Value |"
-            echo "|-------|-------|"
-            echo "| URL | ${{ steps.deployment.outputs.page_url }} |"
-            echo "| Release | ${{ inputs.release_tag || inputs.git_ref }} |"
-            echo "| Git ref | \`${{ inputs.git_ref }}\` |"
-            echo "| Commit | \`${{ needs.build.outputs.commit_short }}\` (\`${{ needs.build.outputs.commit_sha }}\`) |"
-            echo "| Deployed at | ${{ needs.build.outputs.deployed_at }} |"
-            echo "| Base path | \`${{ env.NEXT_PUBLIC_BASE_PATH }}\` |"
-          } >> "$GITHUB_STEP_SUMMARY"
+            echo "|------|------|"
+            echo "| Tag | \`${{ github.ref_name }}\` |"
+            echo "| Commit | \`${{ needs.build.outputs.commit_short }}\` |"
+            echo "| URL | ${{ steps.deploy.outputs.page_url }} |"
+            echo "| Deployed | ${{ needs.build.outputs.deployed_at }} |"
+          } >> $GITHUB_STEP_SUMMARY
