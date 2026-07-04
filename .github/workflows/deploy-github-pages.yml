@@ -4,24 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       git_ref:
-        description: "Git ref to deploy (branch, tag, or commit SHA)"
+        description: "Git ref to deploy (Must be 'main' or 'release/v*')"
         required: true
         default: main
         type: string
-      release_tag:
-        description: "Optional release label for this deployment (e.g. v1.0.0)"
-        required: false
-        type: string
       confirm:
-        description: 'Type "deploy" to confirm production deployment'
+        description: "Type 'deploy' to confirm production launch"
         required: true
         type: string
 
-run-name: Deploy ${{ inputs.release_tag || inputs.git_ref }} to GitHub Pages
+
+run-name: Deploy ${{ inputs.git_ref }} to GitHub Pages
 
 concurrency:
   group: pages-deploy-${{ github.repository }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 defaults:
   run:
@@ -47,7 +44,14 @@ jobs:
             echo "::error::git_ref is required."
             exit 1
           fi
-          echo "Deployment confirmed for ref: ${{ inputs.git_ref }}"
+
+          REF="${{ inputs.git_ref }}"
+          if [[ "$REF" == "main" || "$REF" =~ ^release.* ]]; then
+            echo "Trunk-based branch validation passed for ref: $REF"
+          else
+            echo "::error::Deployment blocked! You can only deploy from 'main' or a 'release.*' branch."
+            exit 1
+          fi
 
   build:
     name: Build static site
