@@ -10,7 +10,8 @@ export default function ServicesView() {
       <section className="skills section-container">
         <div className="page-header">
           <p className="section-label page-enter-fade">Expertise</p>
-          <PageTitle title="Our services" />
+          <PageTitle title="SERIOUS" />
+          <PageTitle title="SKILLS ONLY" />
         </div>
 
         <div className="page-enter-fade">

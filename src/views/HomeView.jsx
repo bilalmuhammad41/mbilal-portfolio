@@ -67,7 +67,7 @@ export default function HomeView() {
 
       <section className="section-container home-preview">
         <p className="section-label">Portfolio</p>
-        <h2 className="section-heading">Featured projects</h2>
+        <h2 className="section-heading">MY GAME</h2>
 
         <div className="home-preview-list">
           {featured.map((project, index) => (

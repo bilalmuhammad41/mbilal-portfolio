@@ -27,9 +27,8 @@ export default function ContactView() {
     <div className="view-page">
       <section className="contact section-container">
         <div className="page-header contact-intro">
-          <p className="section-label page-enter-fade">Get in touch</p>
           <PageTitle
-            title="Hey! Tell us all the things"
+            title="HEY! LET'S WORK TOGETHER"
             className="contact-headline page-title"
           />
         </div>

@@ -8,8 +8,9 @@ export default function BlogView() {
     <div className="view-page">
       <section className="blog section-container">
         <div className="page-header">
-          <p className="section-label page-enter-fade">Journal</p>
-          <PageTitle title="Blog" />
+          <PageTitle noEndSpace title="99 WAYS" />
+          <PageTitle noEndSpace title="TO BE" />
+          <PageTitle title="INSPIRED" />
         </div>
 
         <div className="page-enter-fade">

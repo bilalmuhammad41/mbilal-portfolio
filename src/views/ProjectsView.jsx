@@ -10,8 +10,8 @@ export default function ProjectsView() {
     <div className="view-page">
       <section className="projects section-container">
         <div className="page-header">
-          <p className="section-label page-enter-fade">Portfolio</p>
-          <PageTitle title="Featured projects" />
+          <PageTitle title="MY" />
+          <PageTitle title="GAME" />
         </div>
 
         <div className="page-enter-fade">
