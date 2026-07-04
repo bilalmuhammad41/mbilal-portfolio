@@ -8,10 +8,15 @@ on:
         required: true
         type: string
 
-run-name: Deploy ${{ github.ref_name }} to GitHub Pages
+run-name: Deploy ${{ github.ref_name }}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: pages-deploy-${{ github.repository }}
+  group: pages
   cancel-in-progress: true
 
 defaults:
@@ -22,9 +27,12 @@ env:
   NEXT_PUBLIC_BASE_PATH: /mbilal-portfolio
 
 jobs:
-  guard:
-    name: Validate deployment
+  deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Validate deployment
@@ -36,94 +44,72 @@ jobs:
             exit 1
           fi
 
-          REF="${{ github.ref_name }}"
-
-          if [[ "$REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
-            echo "Deploying release tag: $REF"
-          else
-            echo "::error::This workflow only deploys version tags (v1.2.3)."
+          if [[ "${{ github.ref_type }}" != "tag" ]]; then
+            echo "::error::This workflow must be run from a tag."
             exit 1
           fi
 
-  build:
-    name: Build static site
-    needs: guard
-    runs-on: ubuntu-latest
+          if [[ ! "${{ github.ref_name }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "::error::Tag must follow semantic versioning (v1.2.3)."
+            exit 1
+          fi
 
-    outputs:
-      commit_sha: ${{ steps.meta.outputs.commit_sha }}
-      commit_short: ${{ steps.meta.outputs.commit_short }}
-      release_label: ${{ steps.meta.outputs.release_label }}
-      deployed_at: ${{ steps.meta.outputs.deployed_at }}
-
-    steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - id: meta
+      - name: Debug ref
         run: |
-          echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-          echo "commit_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "release_label=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_OUTPUT
+          echo "ref:        ${{ github.ref }}"
+          echo "ref_name:   ${{ github.ref_name }}"
+          echo "ref_type:   ${{ github.ref_type }}"
+          echo "commit:"
+          git rev-parse HEAD
+          git log --oneline -1
+          git describe --tags --always
 
-      - uses: actions/setup-node@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
 
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
 
       - name: Verify export
         run: |
           test -f out/index.html
           test -f out/.nojekyll
 
-      - name: Write deployment manifest
-        run: |
-          cat > out/deployment.json <<EOF
-          {
-            "site":"mbilal-portfolio",
-            "release":"${{ github.ref_name }}",
-            "commit":"${{ steps.meta.outputs.commit_sha }}",
-            "deployedAt":"${{ steps.meta.outputs.deployed_at }}"
-          }
-          EOF
+          echo "Contents of out:"
+          find out -maxdepth 2
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: ./out
 
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
-    steps:
-      - id: deploy
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
 
       - name: Summary
         run: |
           {
-            echo "## 🚀 Deployment Complete"
+            echo "## Deployment"
             echo ""
-            echo "| Field | Value |"
-            echo "|------|------|"
-            echo "| Tag | \`${{ github.ref_name }}\` |"
-            echo "| Commit | \`${{ needs.build.outputs.commit_short }}\` |"
-            echo "| URL | ${{ steps.deploy.outputs.page_url }} |"
-            echo "| Deployed | ${{ needs.build.outputs.deployed_at }} |"
-          } >> $GITHUB_STEP_SUMMARY
+            echo "- Tag: \`${{ github.ref_name }}\`"
+            echo "- Commit: \`$(git rev-parse --short HEAD)\`"
+            echo "- URL: ${{ steps.deployment.outputs.page_url }}"
+          } >> "$GITHUB_STEP_SUMMARY"
