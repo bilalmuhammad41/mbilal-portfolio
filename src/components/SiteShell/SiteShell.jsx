@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Nav, SplashScreen } from "@/components";
+import { CustomCursor, Nav, SplashScreen } from "@/components";
 import ThemeProvider from "@/components/Theme/ThemeProvider";
 import PageTransitionShell from "@/components/PageTransition/PageTransitionShell";
 
@@ -29,6 +29,7 @@ export default function SiteShell() {
 
   return (
     <ThemeProvider>
+      <CustomCursor />
       <PageTransitionShell formattedTime={formattedTime}>
         <Nav formattedTime={formattedTime} />
       </PageTransitionShell>

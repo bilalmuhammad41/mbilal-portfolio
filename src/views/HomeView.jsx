@@ -57,6 +57,7 @@ export default function HomeView() {
               <TransitionLink
                 href="/services"
                 className={`link-arrow home-cta ${isVisible ? "reveal-visible" : "reveal-hidden"} delay-500`}
+               
               >
                 What I do
               </TransitionLink>
@@ -75,6 +76,7 @@ export default function HomeView() {
               key={project.slug}
               href={`/projects/${project.slug}`}
               className="home-preview-item"
+              
             >
               <span className="home-preview-index">
                 {String(index + 1).padStart(2, "0")}
@@ -99,7 +101,11 @@ export default function HomeView() {
           <br />
           an idea?
         </h2>
-        <TransitionLink href="/contact" className="link-arrow">
+        <TransitionLink
+          href="/contact"
+          className="link-arrow"
+          
+        >
           Tell us
         </TransitionLink>
       </section>

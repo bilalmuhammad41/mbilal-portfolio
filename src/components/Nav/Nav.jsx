@@ -5,6 +5,7 @@ import { NavItems, MobileNavItems } from "../../constants";
 import TransitionLink from "../PageTransition/TransitionLink";
 import NavRollLink from "./NavRollLink";
 import ThemeToggle from "../Theme/ThemeToggle";
+import { ScrollTrigger } from "@/lib/gsap";
 import { isInternalPath } from "@/lib/slug";
 import "./Nav.css";
 
@@ -18,9 +19,21 @@ const Nav = ({ formattedTime }) => {
   const closeDesktopMenu = () => setDesktopMenuOpen(false);
 
   useEffect(() => {
+    if (desktopMenuOpen) {
+      document.dispatchEvent(new CustomEvent("cursor:release-stick"));
+    }
+  }, [desktopMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuBtnVisible) {
+      document.dispatchEvent(new CustomEvent("cursor:release-stick"));
+    }
+  }, [mobileMenuBtnVisible]);
+
+  useEffect(() => {
     const handleScroll = () => closeDesktopMenu();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    ScrollTrigger.addEventListener("scroll", handleScroll);
+    return () => ScrollTrigger.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleMenuClick = () => setDesktopMenuOpen(true);
@@ -135,11 +148,27 @@ const Nav = ({ formattedTime }) => {
                 ))}
               </ul>
 
-              <div className="menu-btn-container" onClick={handleMenuClick}>
+              <div
+                className="menu-btn-container"
+                onClick={handleMenuClick}
+                data-magnetic={desktopMenuOpen ? "false" : "true"}
+                data-cursor-stick={desktopMenuOpen ? "false" : "true"}
+                data-cursor-scale="6"
+                data-cursor-stick-attach="40"
+                data-cursor-stick-max="18"
+                data-cursor-stick-distance="120"
+                data-magnetic-attached="0.15"
+                data-cursor-blend="difference"
+              >
                 <div
-                  className={`menu-btn-track ${desktopMenuOpen ? "menu-button-not-visible" : "menu-button-visible"}`}
+                  className={`menu-btn-track ${desktopMenuOpen ? "menu-button-not-visible" : "menu-button-visible"}` }
+                 
                 >
-                  <button type="button" className="menu-button">
+                  <button
+                    type="button"
+                    className="menu-button"
+                  
+                  >
                     <span>Menu</span>
                     <span className="menu-plus">+</span>
                   </button>
@@ -153,8 +182,16 @@ const Nav = ({ formattedTime }) => {
             <div
               className={`max-sm:flex hidden menu-btn-container ${mobileMenuBtnVisible ? "menu-button-visible" : "menu-button-not-visible"}`}
               onClick={handleMobileMenuClick}
+              data-cursor-stick={mobileMenuBtnVisible ? "true" : "false"}
+              data-cursor-scale="3"
+              data-cursor-stick-max="34"
+              data-cursor-stick-distance="140"
             >
-              <button type="button" className="menu-button">
+              <button
+                type="button"
+                className="menu-button"
+                data-magnetic={mobileMenuBtnVisible ? "true" : "false"}
+              >
                 <span>Menu</span>
                 <span className="menu-plus">+</span>
               </button>

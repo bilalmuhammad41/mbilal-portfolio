@@ -1,17 +1,26 @@
 "use client";
 
 import { useEffect } from "react";
-import { ScrollSmoother } from "@/lib/gsap";
+import { gsap, ScrollSmoother, refreshScroll } from "@/lib/gsap";
 
 export default function ScrollSmootherWrapper({ children }) {
   useEffect(() => {
-    const smoother = ScrollSmoother.create({
-      smooth: 1,
-      effects: true,
-      smoothTouch: 0.1,
+    const ctx = gsap.context(() => {
+      ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.2,
+        effects: true,
+        smoothTouch: 0.1,
+        normalizeScroll: true,
+      });
+      refreshScroll();
     });
 
-    return () => smoother.kill();
+    return () => {
+      ScrollSmoother.get()?.kill();
+      ctx.revert();
+    };
   }, []);
 
   return (
