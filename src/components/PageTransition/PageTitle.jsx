@@ -13,7 +13,7 @@ export function PageTitle({ title, className = "" }) {
         const letters = word.split("");
 
         return (
-          <span key={`word-${wordIndex}`} className="inline-block whitespace-nowrap">
+          <span key={`word-${wordIndex}`} className="page-title-word inline-block whitespace-nowrap">
             <span className="overflow-hidden inline-block">
               {letters.map((letter, letterIndex) => (
                 <span 
