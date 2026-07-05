@@ -35,7 +35,9 @@
   --mobile-menu-border: rgba(0, 0, 0, 0.1);
 }
 
-*, body, html {
+*,
+body,
+html {
   box-sizing: border-box;
   font-family: "DM Sans", sans-serif;
   margin: 0;
@@ -144,6 +146,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }

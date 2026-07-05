@@ -48,6 +48,8 @@
   margin-bottom: 1rem;
 }
 
+.page-view .page-title-word {}
+
 .page-view .page-title-letter {
   transform: translate3d(0, 100%, 0);
 }

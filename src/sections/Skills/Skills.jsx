@@ -4,7 +4,6 @@ import "./Skills.css";
 const Skills = () => {
   return (
     <section className="skills section-container" id="skills">
-      <p className="section-label">Expertise</p>
       <h2 className="section-heading">What I do</h2>
       <p className="skills-subtitle">
         From motion-driven interfaces to performant web apps — I design and

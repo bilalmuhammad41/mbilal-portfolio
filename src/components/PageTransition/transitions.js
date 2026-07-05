@@ -2,14 +2,15 @@ import gsap from "gsap";
 
 export const splitTitleLetters = (title) => title.split("");
 
-/** Slow → fast → slow kinetic easing for the curtain slide */
 export const CURTAIN_EASE = "power4.inOut";
 export const CURTAIN_DURATION = 0.9;
 
 const CURTAIN_HOLD = 0.12;
 
-const TITLE_DURATION = 0.65; 
-const TITLE_STAGGER = 0.075; 
+export const TITLE_DURATION = 0.8;
+export const TITLE_STAGGER = 0.03; 
+export const WORD_DELAY = 0.05;
+export const LETTER_STAGGER = 0.03; 
 
 function getFadeTargets(rootEl) {
   if (!rootEl) return [];
@@ -34,20 +35,50 @@ function preparePageEnter(contentEl, rootEl) {
 }
 
 function animateTitleStagger(rootEl, timeline, position) {
-  const letters = getTitleLetters(rootEl);
-  if (!letters.length) return;
+  let words = rootEl?.querySelectorAll(".page-title-word");
+  if (!words || !words.length) {
+    words = rootEl?.querySelectorAll(".page-title > span");
+  }
 
-  timeline.fromTo(
-    letters,
-    { y: "100%" },
-    {
-      y: "0%",
-      duration: TITLE_DURATION,
-      ease: "power4.out",
-      stagger: TITLE_STAGGER,
-    },
-    position
-  );
+  if (!words || !words.length) {
+    // Fallback to legacy character-only query if no words are found
+    const letters = getTitleLetters(rootEl);
+    if (!letters.length) return;
+    timeline.fromTo(
+      letters,
+      { y: "100%" },
+      {
+        y: "0%",
+        duration: TITLE_DURATION,
+        ease: "power4.out",
+        stagger: TITLE_STAGGER,
+      },
+      position
+    );
+    return;
+  }
+
+  const basePosition = position !== undefined ? position : "+=0";
+  const labelName = `title-start-${Math.random().toString(36).substring(2, 9)}`;
+  timeline.addLabel(labelName, basePosition);
+
+  words.forEach((wordEl, wordIndex) => {
+    const letters = wordEl.querySelectorAll(".page-title-letter");
+    if (!letters.length) return;
+
+    const wordDelay = wordIndex * WORD_DELAY;
+    timeline.fromTo(
+      letters,
+      { y: "100%" },
+      {
+        y: "0%",
+        duration: TITLE_DURATION,
+        ease: "power4.out",
+        stagger: LETTER_STAGGER,
+      },
+      `${labelName}+=${wordDelay}`
+    );
+  });
 }
 
 function animateBodyFadeIn(rootEl, timeline, position) {
