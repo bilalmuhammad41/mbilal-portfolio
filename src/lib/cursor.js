@@ -23,12 +23,12 @@ export default class Cursor {
       blendScale: 2.4,
       sizeEase: 0.18,
       followEase: 0.22,
-      stickPull: 0.26,
+      stickFollowEase: 0.16,
+      stickParallax: 0.12,
       stickAttachDistance: 80,
-      stickMaxDistance: 38,
       stickReleaseDistance: 120,
-      jellyStretchX: 0.38,
-      jellySquashY: 0.1,
+      jellyStretchX: 0.15,
+      jellySquashY: 0.15,
       jellyMinScaleY: 0.9,
       ...options,
     };
@@ -40,7 +40,6 @@ export default class Cursor {
     this.stickScale = this.options.stickScale;
     this.stickReleaseDistance = this.options.stickReleaseDistance;
     this.stickAttachDistance = this.options.stickAttachDistance;
-    this.stickMaxDistance = this.options.stickMaxDistance;
     this.isPointerOverStickTarget = false;
     this.blendScale = this.options.blendScale;
     this.currentSize = this.options.baseSize;
@@ -150,13 +149,6 @@ export default class Cursor {
     return Number.isFinite(distance)
       ? distance
       : this.options.stickReleaseDistance;
-  }
-
-  readStickMaxDistance(el) {
-    const distance = parseFloat(el?.dataset.cursorStickMax);
-    return Number.isFinite(distance)
-      ? distance
-      : this.options.stickMaxDistance;
   }
 
   readStickAttachDistance(el) {
@@ -290,22 +282,6 @@ export default class Cursor {
     return { scaleX, scaleY };
   }
 
-  clampPosToAnchor(anchor) {
-    const dx = this.pos.x - anchor.x;
-    const dy = this.pos.y - anchor.y;
-    const dist = Math.hypot(dx, dy);
-
-    if (dist === 0 || dist <= this.stickMaxDistance) {
-      return dist;
-    }
-
-    const ratio = this.stickMaxDistance / dist;
-    this.pos.x = anchor.x + dx * ratio;
-    this.pos.y = anchor.y + dy * ratio;
-
-    return this.stickMaxDistance;
-  }
-
   getAnchor() {
     if (!this.stickTarget) return null;
     return this.getElementCenter(this.stickTarget);
@@ -315,30 +291,29 @@ export default class Cursor {
     if (!this.visible) return;
 
     const { mouse, pos, options } = this;
-    let anchor = this.getAnchor();
 
-    if (anchor) {
+    if (this.stickTarget) {
       this.checkStickRelease();
-      anchor = this.getAnchor();
     } else {
       this.checkStickAttach();
-      anchor = this.getAnchor();
     }
 
-    if (anchor) {
-      const dx = mouse.x - anchor.x;
-      const dy = mouse.y - anchor.y;
-      const mouseDist = Math.hypot(dx, dy);
-      const pullRatio = Math.min(
-        mouseDist / Math.max(this.stickMaxDistance, 1),
-        1
-      );
-      const targetX = anchor.x + dx * options.stickPull * pullRatio;
-      const targetY = anchor.y + dy * options.stickPull * pullRatio;
+    if (this.stickTarget) {
+      // Element center (includes magnetic displacement from getBoundingClientRect).
+      const center = this.getElementCenter(this.stickTarget);
 
-      pos.x = targetX;
-      pos.y = targetY;
-      this.clampPosToAnchor(anchor);
+      // Drift cursor a fraction of the way toward the mouse from element center.
+      const parallax = this.options.stickParallax;
+      const targetX = center.x + (mouse.x - center.x) * parallax;
+      const targetY = center.y + (mouse.y - center.y) * parallax;
+
+      pos.x += (targetX - pos.x) * options.stickFollowEase;
+      pos.y += (targetY - pos.y) * options.stickFollowEase;
+
+      // Jelly: direction and magnitude from cursor center to mouse
+      const dx = mouse.x - pos.x;
+      const dy = mouse.y - pos.y;
+      const mouseDist = Math.hypot(dx, dy);
 
       const stretchFactor = this.getStretchFactor(mouseDist);
       const { scaleX, scaleY } = this.getJellyScales(stretchFactor);
@@ -411,21 +386,15 @@ export default class Cursor {
     const isSameTarget = this.stickTarget === target;
 
     this.stickTarget = target;
-    this.stickScale = this.readScaleFromElement(
-      target,
-      this.options.stickScale
-    );
+    this.stickScale = this.readScaleFromElement(target, this.options.stickScale);
     this.stickReleaseDistance = this.readStickReleaseDistance(target);
     this.stickAttachDistance = this.readStickAttachDistance(target);
-    this.stickMaxDistance = this.readStickMaxDistance(target);
     this.isPointerOverStickTarget = isPointerOver;
 
     if (!isSameTarget) {
-      const anchor = this.getAnchor();
-      if (anchor) {
-        this.pos.x = anchor.x;
-        this.pos.y = anchor.y;
-      }
+      const center = this.getElementCenter(target);
+      this.pos.x = center.x;
+      this.pos.y = center.y;
     }
 
     this.el.classList.add("cb-cursor--stick");
@@ -538,7 +507,6 @@ export default class Cursor {
     this.stickScale = this.options.stickScale;
     this.stickReleaseDistance = this.options.stickReleaseDistance;
     this.stickAttachDistance = this.options.stickAttachDistance;
-    this.stickMaxDistance = this.options.stickMaxDistance;
     this.el.classList.remove("cb-cursor--stick");
     this.syncBlendState();
     gsap.set(this.inner, { rotate: 0, scaleX: 1, scaleY: 1 });

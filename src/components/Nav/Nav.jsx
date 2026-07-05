@@ -155,7 +155,6 @@ const Nav = ({ formattedTime }) => {
                 data-cursor-stick={desktopMenuOpen ? "false" : "true"}
                 data-cursor-scale="6"
                 data-cursor-stick-attach="40"
-                data-cursor-stick-max="18"
                 data-cursor-stick-distance="120"
                 data-magnetic-attached="0.15"
                 data-cursor-blend="difference"
@@ -184,7 +183,6 @@ const Nav = ({ formattedTime }) => {
               onClick={handleMobileMenuClick}
               data-cursor-stick={mobileMenuBtnVisible ? "true" : "false"}
               data-cursor-scale="3"
-              data-cursor-stick-max="34"
               data-cursor-stick-distance="140"
             >
               <button

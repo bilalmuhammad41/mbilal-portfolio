@@ -89,14 +89,8 @@ class MagneticElement {
     if (!this.isEnabled()) return;
 
     const bound = this.el.getBoundingClientRect();
-    const y =
-      (mouseY - bound.top - bound.height / 2) *
-      this.options.y *
-      strength;
-    const x =
-      (mouseX - bound.left - bound.width / 2) *
-      this.options.x *
-      strength;
+    const y = (mouseY - bound.top - bound.height / 2) * this.options.y * strength;
+    const x = (mouseX - bound.left - bound.width / 2) * this.options.x * strength;
 
     gsap.to(this.el, {
       x,
@@ -142,8 +136,12 @@ class MagneticManager {
     this.update();
   }
 
-  update() {
-    const stickTarget = this.getStickTarget();
+  getOffsetForElement(el) {
+    const item = this.items.find((entry) => entry.el === el);
+    return item?.offset ?? { x: 0, y: 0 };
+  }
+
+  update() {    const stickTarget = this.getStickTarget();
 
     this.items.forEach((item) => {
       if (!item.isEnabled()) {
