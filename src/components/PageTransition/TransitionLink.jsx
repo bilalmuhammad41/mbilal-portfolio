@@ -25,7 +25,8 @@ const TransitionLink = ({
   };
 
   return (
-    <a href={href} className={className} onClick={handleClick} {...props}>
+    <a data-cursor-blend="difference"
+    data-cursor-scale="2.8" href={href} className={className} onClick={handleClick} {...props}>
       {children}
     </a>
   );

@@ -9,6 +9,12 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { PAGE_REGISTRY } from "@/lib/pages";
 import { normalizeSlug } from "@/lib/slug";
+import ScrollSmootherWrapper from "@/components/ScrollSmoother/ScrollSmootherWrapper";
+import {
+  refreshScroll,
+  scrollToTop,
+  setScrollPaused,
+} from "@/lib/gsap";
 import {
   fadeContentIn,
   revealContentUnderCurtain,
@@ -76,7 +82,7 @@ const PageTransitionShell = ({ formattedTime, children }) => {
     async (fromSlug, toSlug, { updateUrl = false } = {}) => {
       isTransitioningRef.current = true;
       setIsTransitioning(true);
-      document.body.style.overflow = "hidden";
+      setScrollPaused(true);
 
       await slideCurtainUp(curtainRef.current, overlayRef.current);
 
@@ -87,11 +93,14 @@ const PageTransitionShell = ({ formattedTime, children }) => {
         router.push(toSlug === "/" ? "/" : `${toSlug}/`);
       }
 
-      window.scrollTo(0, 0);
+      scrollToTop(true);
 
       await playEnter(toSlug);
 
-      document.body.style.overflow = "";
+      requestAnimationFrame(() => {
+        refreshScroll();
+        setScrollPaused(false);
+      });
       isTransitioningRef.current = false;
       setIsTransitioning(false);
     },
@@ -123,8 +132,9 @@ const PageTransitionShell = ({ formattedTime, children }) => {
     if (!hasPlayedInitial.current) {
       hasPlayedInitial.current = true;
 
-      const timer = setTimeout(() => {
-        playEnter(slug, { skipCurtain: true });
+      const timer = setTimeout(async () => {
+        await playEnter(slug, { skipCurtain: true });
+        requestAnimationFrame(refreshScroll);
       }, 50);
 
       return () => clearTimeout(timer);
@@ -150,23 +160,25 @@ const PageTransitionShell = ({ formattedTime, children }) => {
   return (
     <PageTransitionProvider value={contextValue}>
       {children}
-      <main className="main w-full bg-[var(--bg)]">
-        <div className="site-views">
-          {Object.entries(PAGE_REGISTRY).map(([slug, entry]) => {
-            const View = entry.component;
-            return (
-              <PageView
-                key={slug}
-                slug={slug}
-                isActive={activeSlug === slug}
-                registerPageRef={registerPageRef}
-              >
-                <View project={entry.project} formattedTime={formattedTime} />
-              </PageView>
-            );
-          })}
-        </div>
-      </main>
+      <ScrollSmootherWrapper>
+        <main className="main w-full bg-[var(--bg)]">
+          <div className="site-views">
+            {Object.entries(PAGE_REGISTRY).map(([slug, entry]) => {
+              const View = entry.component;
+              return (
+                <PageView
+                  key={slug}
+                  slug={slug}
+                  isActive={activeSlug === slug}
+                  registerPageRef={registerPageRef}
+                >
+                  <View project={entry.project} formattedTime={formattedTime} />
+                </PageView>
+              );
+            })}
+          </div>
+        </main>
+      </ScrollSmootherWrapper>
       <TransitionCurtain ref={curtainRef} />
       <TransitionOverlay ref={overlayRef} />
     </PageTransitionProvider>
