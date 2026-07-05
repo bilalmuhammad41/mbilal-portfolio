@@ -5,15 +5,13 @@ import { Button } from '../../components'
 import Image from 'next/image'
 
 const About = () => {
-
-  const imgSize = '200px';
   return (
     <section className='flex py-20 px-[10svw] w-[100svw] justify-end items-start sm:items-center flex-col md:flex-row' id='about'>
 
       {/* Profile Pic */}
 
       <div className='m-4'>
-        <img className={`rounded-full md:h-[240px] md:w-[240px] ss:w-[200px] ss:h-[200px] w-[180px] h-[180px]`} src={profile_picture} height={imgSize} width={imgSize} alt="profile_picture" />
+        <Image className={`rounded-full md:h-[240px] md:w-[240px] ss:w-[200px] ss:h-[200px] w-[180px] h-[180px]`} src={profile_picture} height={240} width={240} alt="profile_picture" />
       </div>
       <div className='px-5 max-w-[500px] md:text-[1.125rem]  ss:text-[1rem] text-[0.9rem]'>
         <h2 className='font-semibold text-[#969696] leading-10'>ABOUT ME</h2>
