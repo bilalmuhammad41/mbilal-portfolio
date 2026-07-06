@@ -2,7 +2,7 @@
 
 This site is a **static Next.js export** deployed to GitHub Pages at:
 
-**https://bilalmuhammad41.github.io/mbilal-portfolio/**
+**https://bilalmuhammad41.github.io/left-brain-right-pixels/**
 
 Deployments are **manual only** via GitHub Actions.
 
@@ -42,7 +42,7 @@ Each successful deploy writes `deployment.json` at the site root with commit, re
 
 - `npm ci`
 - `npm run lint`
-- `npm run build` (static export with `/mbilal-portfolio` base path)
+- `npm run build` (static export with `/left-brain-right-pixels` base path)
 
 CI does **not** deploy to production.
 
@@ -50,16 +50,16 @@ CI does **not** deploy to production.
 
 ```bash
 # Linux / macOS
-NEXT_PUBLIC_BASE_PATH=/mbilal-portfolio npm run build
+NEXT_PUBLIC_BASE_PATH=/left-brain-right-pixels npm run build
 
 # Git Bash on Windows (disable MSYS path conversion)
-MSYS_NO_PATHCONV=1 NEXT_PUBLIC_BASE_PATH=/mbilal-portfolio npm run build
+MSYS_NO_PATHCONV=1 NEXT_PUBLIC_BASE_PATH=/left-brain-right-pixels npm run build
 
 # PowerShell
-$env:NEXT_PUBLIC_BASE_PATH="/mbilal-portfolio"; npm run build
+$env:NEXT_PUBLIC_BASE_PATH="/left-brain-right-pixels"; npm run build
 ```
 
-Output: `out/` (asset URLs are prefixed with `/mbilal-portfolio`)
+Output: `out/` (asset URLs are prefixed with `/left-brain-right-pixels`)
 
 Preview locally:
 
@@ -67,4 +67,4 @@ Preview locally:
 npx serve out
 ```
 
-Open http://localhost:3000/mbilal-portfolio/ (port may vary; the path must include `/mbilal-portfolio`).
+Open http://localhost:3000/left-brain-right-pixels/ (port may vary; the path must include `/left-brain-right-pixels`).

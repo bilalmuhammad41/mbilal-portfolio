@@ -15,4 +15,4 @@ After publishing this release, deploy to GitHub Pages:
 5. Type `deploy` in **confirm**
 6. Run workflow
 
-Live site: https://bilalmuhammad41.github.io/mbilal-portfolio/
+Live site: https://bilalmuhammad41.github.io/left-brain-right-pixels/

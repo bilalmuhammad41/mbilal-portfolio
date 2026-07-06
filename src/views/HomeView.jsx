@@ -20,7 +20,6 @@ export default function HomeView() {
   return (
     <div className="view-page">
       <section className="home section-container">
-        <Marquee text="available" separator="-" />
 
         <div className="home-hero">
           <div className="home-hero-text">
@@ -28,9 +27,9 @@ export default function HomeView() {
               <h1
                 className={`home-headline ${isVisible ? "reveal-visible" : "reveal-hidden"}`}
               >
-                Frontend engineer
+                Left Brain
                 <br />
-                &amp; digital creator
+                Right Pixels
               </h1>
             </div>
 
@@ -39,18 +38,10 @@ export default function HomeView() {
                 <p
                   className={`home-paragraph ${isVisible ? "reveal-visible" : "reveal-hidden"} delay-200`}
                 >
-                  I help brands and teams build scalable digital products with
-                  thoughtful design systems and carefully crafted development.
+                The technical horsepower of a software engineer with the taste of a designer.
                 </p>
               </div>
-              <div className="overflow-hidden">
-                <p
-                  className={`home-paragraph ${isVisible ? "reveal-visible" : "reveal-hidden"} delay-300`}
-                >
-                  For over 5 years I&apos;ve been creating as a digital artist,
-                  and now I bring that same creative eye to web development.
-                </p>
-              </div>
+             
             </div>
 
             <div className="overflow-hidden">
@@ -67,7 +58,6 @@ export default function HomeView() {
       </section>
 
       <section className="section-container home-preview">
-        <p className="section-label">Portfolio</p>
         <h2 className="section-heading">MY GAME</h2>
 
         <div className="home-preview-list">

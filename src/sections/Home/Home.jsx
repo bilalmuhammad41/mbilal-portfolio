@@ -25,9 +25,9 @@ const Home = () => {
             <h1
               className={`home-headline ${isVisible ? "reveal-visible" : "reveal-hidden"}`}
             >
-              Frontend engineer
+              Creatively
               <br />
-              &amp; digital creator
+              Technical
             </h1>
           </div>
 
@@ -36,19 +36,11 @@ const Home = () => {
               <p
                 className={`home-paragraph ${isVisible ? "reveal-visible" : "reveal-hidden"} delay-200`}
               >
-                I help brands and teams build scalable digital products with
-                thoughtful design systems and carefully crafted development.
+                I engineer smooth digital products, craft premium UI, and rarely break production on a Friday. Let&apos;s build something cool.  
               </p>
             </div>
             <div className="overflow-hidden">
-              <p
-                className={`home-paragraph ${isVisible ? "reveal-visible" : "reveal-hidden"} delay-300`}
-              >
-                For over 5 years I&apos;ve been creating as a digital artist, and
-                now I bring that same creative eye to web development — building
-                captivating online experiences with no shortcuts or
-                simplifications.
-              </p>
+              
             </div>
             <div className="overflow-hidden">
               <p
