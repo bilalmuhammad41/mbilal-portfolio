@@ -24,7 +24,7 @@ defaults:
     shell: bash
 
 env:
-  NEXT_PUBLIC_BASE_PATH: /mbilal-portfolio
+  NEXT_PUBLIC_BASE_PATH: /left-brain-right-pixels
 
 jobs:
   deploy:

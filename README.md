@@ -1,4 +1,4 @@
-# Mbilal-portfolio
+# Left Brain Right Pixels
 
 A single-page front-end project focused on layout, motion, and scroll-driven interactions.
 
@@ -36,13 +36,13 @@ npm run lint    # ESLint
 
 ## Deployment (GitHub Pages)
 
-Live URL: **https://bilalmuhammad41.github.io/mbilal-portfolio/**
+Live URL: **https://bilalmuhammad41.github.io/left-brain-right-pixels/**
 
 Deployments are **manual** via GitHub Actions. See [.github/DEPLOYMENT.md](.github/DEPLOYMENT.md) for setup, releases, and how to run the deploy workflow.
 
 ```bash
 # Local static build (same as CI / Pages)
-NEXT_PUBLIC_BASE_PATH=/mbilal-portfolio npm run build
+NEXT_PUBLIC_BASE_PATH=/left-brain-right-pixels npm run build
 ```
 
 ## Project status

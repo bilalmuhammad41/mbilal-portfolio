@@ -15,7 +15,7 @@ defaults:
     shell: bash
 
 env:
-  NEXT_PUBLIC_BASE_PATH: /mbilal-portfolio
+  NEXT_PUBLIC_BASE_PATH: /left-brain-right-pixels
 
 jobs:
   quality:
@@ -54,8 +54,8 @@ jobs:
             echo "::error::Missing out/.nojekyll (required for GitHub Pages)."
             exit 1
           fi
-          if ! grep -q '"/mbilal-portfolio/_next/' out/index.html; then
-            echo "::error::Built index.html is missing /mbilal-portfolio base path prefixes."
+          if ! grep -q '"/left-brain-right-pixels/_next/' out/index.html; then
+            echo "::error::Built index.html is missing /left-brain-right-pixels base path prefixes."
             exit 1
           fi
           echo "Static export verified."
