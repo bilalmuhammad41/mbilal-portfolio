@@ -5,7 +5,7 @@ import { NavItems, MobileNavItems } from "../../constants";
 import TransitionLink from "../PageTransition/TransitionLink";
 import NavRollLink from "./NavRollLink";
 import ThemeToggle from "../Theme/ThemeToggle";
-import { ScrollTrigger } from "@/lib/gsap";
+import { ScrollTrigger, getScrollSmoother } from "@/lib/gsap";
 import { isInternalPath } from "@/lib/slug";
 import "./Nav.css";
 
@@ -31,10 +31,31 @@ const Nav = ({ formattedTime }) => {
   }, [mobileMenuBtnVisible]);
 
   useEffect(() => {
-    const handleScroll = () => closeDesktopMenu();
-    ScrollTrigger.addEventListener("scroll", handleScroll);
-    return () => ScrollTrigger.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (!desktopMenuOpen) return;
+
+    const closeOnScroll = () => setDesktopMenuOpen(false);
+
+    const getScrollRoot = () => {
+      const scroller = getScrollSmoother()?.scrollTrigger?.scroller;
+      if (scroller instanceof Element) return scroller;
+      if (typeof scroller === "string") {
+        return document.querySelector(scroller);
+      }
+      return document.getElementById("smooth-wrapper") ?? window;
+    };
+
+    const scrollRoot = getScrollRoot() ?? window;
+
+    ScrollTrigger.addEventListener("scroll", closeOnScroll);
+    scrollRoot.addEventListener("scroll", closeOnScroll, { passive: true });
+    window.addEventListener("wheel", closeOnScroll, { passive: true });
+
+    return () => {
+      ScrollTrigger.removeEventListener("scroll", closeOnScroll);
+      scrollRoot.removeEventListener("scroll", closeOnScroll);
+      window.removeEventListener("wheel", closeOnScroll);
+    };
+  }, [desktopMenuOpen]);
 
   const handleMenuClick = () => setDesktopMenuOpen(true);
 
@@ -165,11 +186,13 @@ const Nav = ({ formattedTime }) => {
                 >
                   <button
                     type="button"
-                    className="menu-button"
-                  
+                    className="menu-button menu-button--hamburger"
+                    aria-label="Menu"
                   >
-                    <span>Menu</span>
-                    <span className="menu-plus">+</span>
+                    <span className="menu-hamburger" aria-hidden="true">
+                      <span className="menu-hamburger__line" />
+                      <span className="menu-hamburger__line" />
+                    </span>
                   </button>
                 </div>
               </div>
@@ -177,7 +200,7 @@ const Nav = ({ formattedTime }) => {
           </div>
 
           <div className="nav-actions">
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
             <div
               className={`max-sm:flex hidden menu-btn-container ${mobileMenuBtnVisible ? "menu-button-visible" : "menu-button-not-visible"}`}
               onClick={handleMobileMenuClick}
@@ -187,11 +210,14 @@ const Nav = ({ formattedTime }) => {
             >
               <button
                 type="button"
-                className="menu-button"
+                className="menu-button menu-button--hamburger"
+                aria-label="Menu"
                 data-magnetic={mobileMenuBtnVisible ? "true" : "false"}
               >
-                <span>Menu</span>
-                <span className="menu-plus">+</span>
+                <span className="menu-hamburger" aria-hidden="true">
+                  <span className="menu-hamburger__line" />
+                  <span className="menu-hamburger__line" />
+                </span>
               </button>
             </div>
           </div>
@@ -212,7 +238,7 @@ const Nav = ({ formattedTime }) => {
             </TransitionLink>
 
             <div className="mobile-menu-header-actions">
-              <ThemeToggle className="mobile-theme-toggle" />
+              {/* <ThemeToggle className="mobile-theme-toggle" /> */}
               <div
                 className={`close-btn-container ${closeBtnVisible ? "close-btn-visible" : "close-btn-not-visible"}`}
                 onClick={closeBtnClick}
