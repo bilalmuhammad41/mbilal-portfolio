@@ -74,7 +74,7 @@ export default function ContactView() {
             </label>
 
             <label className="contact-label">
-              Tell us about your project
+              Tell me about your project
               <textarea
                 className="contact-input contact-textarea"
                 name="message"

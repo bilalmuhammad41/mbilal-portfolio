@@ -96,7 +96,7 @@ export default function HomeView() {
           className="link-arrow"
           
         >
-          Tell us
+          Tell me
         </TransitionLink>
       </section>
     </div>
