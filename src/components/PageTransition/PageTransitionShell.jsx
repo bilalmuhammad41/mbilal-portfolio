@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -130,14 +131,42 @@ const PageTransitionShell = ({ formattedTime, children }) => {
     if (slug === activeSlug && hasPlayedInitial.current) return;
 
     if (!hasPlayedInitial.current) {
-      hasPlayedInitial.current = true;
+      let cancelled = false;
+      let attempts = 0;
+      const maxAttempts = 30;
 
-      const timer = setTimeout(async () => {
+      const tryPlayInitialEnter = async () => {
+        if (cancelled) return;
+
+        const { contentEl } = getPageElements(slug);
+
+        if (!contentEl) {
+          attempts += 1;
+          if (attempts < maxAttempts) {
+            requestAnimationFrame(tryPlayInitialEnter);
+            return;
+          }
+
+          hasPlayedInitial.current = true;
+          return;
+        }
+
         await playEnter(slug, { skipCurtain: true });
-        requestAnimationFrame(refreshScroll);
-      }, 50);
 
-      return () => clearTimeout(timer);
+        if (!cancelled) {
+          hasPlayedInitial.current = true;
+          requestAnimationFrame(refreshScroll);
+        }
+      };
+
+      const frame = requestAnimationFrame(() => {
+        tryPlayInitialEnter();
+      });
+
+      return () => {
+        cancelled = true;
+        cancelAnimationFrame(frame);
+      };
     }
 
     if (slug !== activeSlug) {
@@ -189,7 +218,7 @@ function PageView({ slug, isActive, registerPageRef, children }) {
   const rootRef = useRef(null);
   const contentRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     registerPageRef(slug, { rootRef, contentRef });
   }, [slug, registerPageRef]);
 

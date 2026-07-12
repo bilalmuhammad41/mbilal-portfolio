@@ -174,7 +174,7 @@ const Nav = ({ formattedTime }) => {
                 onClick={handleMenuClick}
                 data-magnetic={desktopMenuOpen ? "false" : "true"}
                 data-cursor-stick={desktopMenuOpen ? "false" : "true"}
-                data-cursor-scale="6"
+                data-cursor-scale="5"
                 data-cursor-stick-attach="40"
                 data-cursor-stick-distance="120"
                 data-magnetic-attached="0.15"

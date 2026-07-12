@@ -52,14 +52,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="overflow-hidden">
-            <a
-              href="#skills"
-              className={`link-arrow home-cta ${isVisible ? "reveal-visible" : "reveal-hidden"} delay-500`}
-            >
-              What I do
-            </a>
-          </div>
+          
         </div>
 
         <div className="home-meta">

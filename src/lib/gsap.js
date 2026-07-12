@@ -11,10 +11,14 @@ export function getScrollSmoother() {
 export function scrollToTop(instant = true) {
   const smoother = ScrollSmoother.get();
   if (smoother) {
-    smoother.scrollTo(0, instant);
+    if (instant) {
+      smoother.scrollTop(0);
+    } else {
+      smoother.scrollTo(0, true);
+    }
     return;
   }
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0, behavior: instant ? "auto" : "smooth" });
 }
 
 export function refreshScroll() {
