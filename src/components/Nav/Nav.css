@@ -16,7 +16,7 @@
 
 .nav-logo {
   font-size: clamp(1rem, 2vw, 1.125rem);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text);
   text-decoration: none;
 }
