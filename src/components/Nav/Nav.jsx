@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { NavItems, MobileNavItems } from "../../constants";
 import TransitionLink from "../PageTransition/TransitionLink";
 import NavRollLink from "./NavRollLink";
+import NavLink from "./NavLink";
 import ThemeToggle from "../Theme/ThemeToggle";
 import { ScrollTrigger, getScrollSmoother } from "@/lib/gsap";
-import { isInternalPath } from "@/lib/slug";
 import "./Nav.css";
 
 const Nav = ({ formattedTime }) => {
@@ -113,31 +113,11 @@ const Nav = ({ formattedTime }) => {
     closeDesktopMenu();
   };
 
-  const renderMobileNavLink = (item, className, onNavigate) => {
-    if (isInternalPath(item.link)) {
-      return (
-        <TransitionLink
-          href={item.link}
-          className={className}
-          onClick={onNavigate}
-        >
-          {item.title}
-        </TransitionLink>
-      );
-    }
-
-    return (
-      <a
-        href={item.link}
-        className={className}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onNavigate}
-      >
-        {item.title}
-      </a>
-    );
-  };
+  const renderMobileNavLink = (item, className, onNavigate) => (
+    <NavLink href={item.link} className={className} onClick={onNavigate}>
+      {item.title}
+    </NavLink>
+  );
 
   return (
     <nav className="nav-bar">
@@ -160,7 +140,6 @@ const Nav = ({ formattedTime }) => {
                   >
                     <NavRollLink
                       href={item.link}
-                      external={!isInternalPath(item.link)}
                       onClick={handleDesktopNavClick}
                     >
                       {item.title}
@@ -238,7 +217,7 @@ const Nav = ({ formattedTime }) => {
             </TransitionLink>
 
             <div className="mobile-menu-header-actions">
-              {/* <ThemeToggle className="mobile-theme-toggle" /> */}
+              <ThemeToggle className="mobile-theme-toggle" />
               <div
                 className={`close-btn-container ${closeBtnVisible ? "close-btn-visible" : "close-btn-not-visible"}`}
                 onClick={closeBtnClick}

@@ -1,0 +1,40 @@
+---
+description: Portfolio architecture rules — reuse existing systems before creating new code
+globs:
+alwaysApply: true
+---
+
+# Architecture Rules
+
+Read [AGENTS.md](../AGENTS.md) before implementing features.
+
+## Required workflow
+
+1. Read relevant `docs/` file for the task area
+2. Search [docs/components/component-index.md](../docs/components/component-index.md)
+3. Search [docs/hooks/hooks-index.md](../docs/hooks/hooks-index.md)
+4. Search [docs/utilities/utilities-index.md](../docs/utilities/utilities-index.md)
+5. Check [docs/audits/redundancy-report.md](../docs/audits/redundancy-report.md)
+
+## Never
+
+- Create parallel animation systems (use GSAP via `@/lib/gsap`)
+- Use `motion` / Framer Motion for new animations
+- Bypass `TransitionLink` for internal navigation
+- Add new pages in `src/sections/` (use `src/views/`)
+- Hardcode theme colors (use CSS variables in `globals.css`)
+- Delete redundant code without human approval
+
+## Always
+
+- Register new pages in `src/lib/pages.js`
+- Use `PageTitle` + `.page-enter-fade` on views
+- Use cursor `data-*` attributes for hover interactions
+- Import scroll utilities from `@/lib/gsap`
+- Update docs indexes when adding shared modules
+
+## Key paths
+
+- Architecture: `docs/architecture/overview.md`
+- Animation: `docs/architecture/animation.md`
+- Cursor API: `src/lib/cursor/README.md`

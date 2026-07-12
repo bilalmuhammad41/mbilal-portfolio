@@ -1,4 +1,4 @@
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 
 export const splitTitleLetters = (title) => title.split("");
 

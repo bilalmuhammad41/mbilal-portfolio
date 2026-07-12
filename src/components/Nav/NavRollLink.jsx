@@ -1,7 +1,6 @@
 "use client";
 
-import TransitionLink from "../PageTransition/TransitionLink";
-import { isInternalPath } from "@/lib/slug";
+import NavLink from "./NavLink";
 import "./NavRollLink.css";
 
 const NavRollLink = ({
@@ -22,24 +21,15 @@ const NavRollLink = ({
 
   const classes = `nav-roll-link ${className}`.trim();
 
-  if (external || !isInternalPath(href)) {
-    return (
-      <a
-        href={href}
-        className={classes}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onClick}
-      >
-        {rollText}
-      </a>
-    );
-  }
-
   return (
-    <TransitionLink href={href} className={classes} onClick={onClick}>
+    <NavLink
+      href={href}
+      className={classes}
+      onClick={onClick}
+      external={external}
+    >
       {rollText}
-    </TransitionLink>
+    </NavLink>
   );
 };
 

@@ -4,7 +4,7 @@ This site is a **static Next.js export** deployed to GitHub Pages at:
 
 **https://bilalmuhammad41.github.io/left-brain-right-pixels/**
 
-Deployments are **manual only** via GitHub Actions.
+Deployments are **manual only** via GitHub Actions, triggered from a semver tag.
 
 ## One-time setup
 
@@ -18,23 +18,23 @@ Deployments are **manual only** via GitHub Actions.
 |------|--------|
 | 1 | Merge changes to `main` |
 | 2 | Create a [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) with tag `vX.Y.Z` (e.g. `v1.0.0`) |
-| 3 | Run **Deploy to GitHub Pages** manually (see below) |
-| 4 | Verify the live URL and `deployment.json` on the site |
+| 3 | Run **Deploy to GitHub Pages** from that tag (see below) |
+| 4 | Verify the live URL after the workflow completes |
 
 Tags follow **semantic versioning**: `vMAJOR.MINOR.PATCH`.
 
 ## Manual deployment
 
 1. Go to **Actions** → **Deploy to GitHub Pages**
-2. Click **Run workflow**
+2. Click **Run workflow** (must be run from a semver tag, e.g. `v1.0.0`)
 3. Fill in:
-   - **git_ref**: branch, tag, or SHA to deploy (e.g. `main` or `v1.0.0`)
-   - **release_tag**: optional label shown in the deployment manifest (e.g. `v1.0.0`)
    - **confirm**: type `deploy` exactly
 4. Approve the `github-pages` environment if required
-5. Wait for **build** then **deploy** jobs to succeed
+5. Wait for the **deploy** job to succeed
 
-Each successful deploy writes `deployment.json` at the site root with commit, release label, and timestamp.
+The workflow runs `npm ci`, `npm run lint`, `npm run build`, uploads `out/`, and deploys via GitHub Pages.
+
+Deployment summary (tag, commit, URL) is written to the workflow run summary — not to a `deployment.json` file on the site.
 
 ## CI (automatic)
 
@@ -43,6 +43,7 @@ Each successful deploy writes `deployment.json` at the site root with commit, re
 - `npm ci`
 - `npm run lint`
 - `npm run build` (static export with `/left-brain-right-pixels` base path)
+- Verifies `out/index.html`, `out/.nojekyll`, and base path in built HTML
 
 CI does **not** deploy to production.
 

@@ -1,19 +1,16 @@
 "use client";
 
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useRef } from "react";
 import { createPortal } from "react-dom";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
+import { useIsClient } from "@/lib/useIsClient";
 import "./TransitionCurtain.css";
 
 const TransitionCurtain = forwardRef(function TransitionCurtain(_props, ref) {
-  const [mounted, setMounted] = useState(false);
+  const isClient = useIsClient();
   const initialized = useRef(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
+  if (!isClient) return null;
 
   return createPortal(
     <div

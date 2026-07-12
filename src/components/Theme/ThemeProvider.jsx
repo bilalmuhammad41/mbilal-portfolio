@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ThemeProvider as ThemeContextProvider } from "./ThemeContext";
+import { ThemeContextProvider } from "./ThemeContext";
 
 function getInitialTheme() {
   if (typeof window === "undefined") return "dark";

@@ -2,13 +2,15 @@
 
 import { forwardRef, useRef } from "react";
 import { createPortal } from "react-dom";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
+import { useIsClient } from "@/lib/useIsClient";
 import "./TransitionOverlay.css";
 
 const TransitionOverlay = forwardRef(function TransitionOverlay(_props, ref) {
   const initialized = useRef(false);
+  const isClient = useIsClient();
 
-  if (typeof document === "undefined") return null;
+  if (!isClient) return null;
 
   return createPortal(
     <div
