@@ -48,6 +48,10 @@
   margin-bottom: 1rem;
 }
 
+.page-header .page-title--no-end-space {
+  margin-bottom: 0;
+}
+
 .page-view .page-title-word {}
 
 .page-view .page-title-letter {

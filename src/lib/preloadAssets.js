@@ -6,6 +6,7 @@ import {
   profile_picture,
 } from "@/assets";
 import { withBasePath } from "@/lib/basePath";
+import { PRELOAD_FONT_DESCRIPTORS } from "@/lib/fontFaces";
 
 const IMAGE_ASSETS = [
   lines,
@@ -16,11 +17,7 @@ const IMAGE_ASSETS = [
   withBasePath("/Logo.png"),
 ];
 
-const FONT_ASSETS = [
-  "16px Gilroy-normal",
-  "16px Gilroy-medium",
-  "600 16px Gilroy-semibold",
-];
+const FONT_ASSETS = PRELOAD_FONT_DESCRIPTORS;
 
 function loadImage(src) {
   return new Promise((resolve) => {

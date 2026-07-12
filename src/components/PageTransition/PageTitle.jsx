@@ -1,12 +1,11 @@
 "use client";
 
-
-export function PageTitle({ title, className = "" }) {
+export function PageTitle({ title, className = "", noEndSpace = false }) {
   const words = (title || "").split(" ");
 
   return (
     <h1
-      className={`page-title ${className}`}
+      className={`page-title ${noEndSpace ? "page-title--no-end-space" : ""} ${className}`.trim()}
       aria-label={title}
     >
       {words.map((word, wordIndex) => {
@@ -16,8 +15,8 @@ export function PageTitle({ title, className = "" }) {
           <span key={`word-${wordIndex}`} className="page-title-word inline-block whitespace-nowrap">
             <span className="overflow-hidden inline-block">
               {letters.map((letter, letterIndex) => (
-                <span 
-                  key={`letter-${wordIndex}-${letterIndex}`} 
+                <span
+                  key={`letter-${wordIndex}-${letterIndex}`}
                   className="page-title-letter inline-block"
                 >
                   {letter}

@@ -52,3 +52,10 @@ return `/* DM Sans */
 }
 `.trim();
 }
+
+/** Font descriptors for splash-screen preload — weights used in UI. */
+export const PRELOAD_FONT_DESCRIPTORS = [
+  '400 16px "DM Sans"',
+  '600 16px "DM Sans"',
+  '700 16px "DM Sans"',
+];
