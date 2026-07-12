@@ -2,8 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --yellow-color: #FCF55F;
+}
+
 :root,
 [data-theme="dark"] {
+  --dark-color: #ebebeb;
   --bg: #161616;
   --bg-elevated: #1e1e1e;
   --text: #ffffff;
@@ -21,6 +26,7 @@
 }
 
 [data-theme="light"] {
+  --dark-color: #161616;
   --bg: #ebebeb;
   --bg-elevated: #ffffff;
   --text: #161616;

@@ -29,7 +29,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  font-size: clamp(2.5rem, 12vw, 14rem);
+  font-size: clamp(2.5rem, 12vw, 11rem);
   font-weight: 900;
   line-height: .85;
   letter-spacing: 0em;
